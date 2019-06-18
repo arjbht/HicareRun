@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.OrderViewActivity">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <!--<variable-->
+        <!--name="model"-->
+        <!--type="com.hicarepestcontrol.viewmodel.OrderViewModel" />-->
+
+        <variable
+            name="handler"
+            type="com.arj.hicarehygiene.handler.UserOrderClickHandler" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            style="@style/ToolBarStyle.Event"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tab_textColor"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/white"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_logo"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:paddingLeft="5dp"
+                        android:src="@mipmap/logo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/txt_price"
+                        app:layout_constraintRight_toLeftOf="@id/txt_price"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+
+                        />
+
+
+                    <TextView
+                        android:id="@+id/txt_service"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="5dp"
+                        android:text="Pest Control"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toRightOf="@+id/img_logo"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/img_logo"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txt_orderno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingMultiplier="1.2"
+
+                        android:textColor="@color/colorTextDrawerSecondary"
+                        app:layout_constraintLeft_toRightOf="@+id/img_logo"
+                        app:layout_constraintTop_toBottomOf="@id/txt_service"
+                        tools:ignore="MissingConstraints" />
+
+                    <TextView
+                        android:id="@+id/txt_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="2dp"
+
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="5dp"
+                        android:textColor="@color/colorTextDrawerSecondary"
+                        app:layout_constraintLeft_toRightOf="@+id/img_logo"
+                        app:layout_constraintTop_toBottomOf="@id/txt_orderno"
+                        tools:ignore="MissingConstraints" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/white"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/constaint1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{(view) -> handler.onConstraintClicked(view)}">
+
+                        <TextView
+                            android:id="@+id/txt_Actualservice"
+                            android:layout_width="320dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:paddingTop="5dp"
+                            android:text="General Pest Control"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintLeft_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_schedule"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="Scheduled on : 25th Mar 2019 | 04:00 PM - 05:00 PM"
+                            android:textColor="@color/colorTextDrawerSecondary"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/txt_Actualservice"
+                            tools:ignore="MissingConstraints" />
+
+
+                        <ImageView
+                            android:id="@+id/img_up"
+                            android:layout_width="16dp"
+                            android:layout_height="20dp"
+                            android:layout_marginRight="15dp"
+                            android:src="@drawable/ic_up_arrow"
+                            android:tint="@color/black"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/img_down"
+                            android:layout_width="16dp"
+                            android:layout_height="20dp"
+                            android:layout_marginRight="15dp"
+                            android:src="@drawable/ic_down"
+                            android:tint="@color/black"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/constraint2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintTop_toBottomOf="@id/constaint1">
+
+                        <TextView
+                            android:id="@+id/txt_apartment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:paddingBottom="5dp"
+                            android:text="Select Apartment Size - 1BHK"
+                            android:textColor="@color/colorTextDrawerSecondary"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+
+                            tools:ignore="MissingConstraints" />
+
+                        <TextView
+                            android:id="@+id/txt_total"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="rs650"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="MissingConstraints" />
+
+                        <TextView
+                            android:id="@+id/txt_quantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:paddingBottom="5dp"
+                            android:text="Qty: 1"
+                            android:textColor="@color/black"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/txt_total"
+                            tools:ignore="MissingConstraints" />
+
+
+                        <!--<com.transferwise.sequencelayout.SequenceLayout-->
+                        <!--android:id="@+id/sequence"-->
+                        <!--android:layout_width="260dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="15dp"-->
+                        <!--app:layout_constraintTop_toBottomOf="@id/txt_quantity">-->
+
+                        <!--<com.transferwise.sequencelayout.SequenceStep-->
+                        <!--android:id="@+id/first"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--app:anchor="26 Mar"-->
+                        <!--app:subtitle="Lorem Ipsum is simply dummy text of the printing and typesetting industry.-->
+                        <!--Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."-->
+                        <!--app:title="ORDER PLACED" />-->
+
+                        <!--<com.transferwise.sequencelayout.SequenceStep-->
+                        <!--android:id="@+id/second"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--app:title="ORDER IN PROGRESS" />-->
+
+                        <!--<com.transferwise.sequencelayout.SequenceStep-->
+                        <!--android:id="@+id/third"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--app:title="ORDER COMPLETED" />-->
+                        <!--</com.transferwise.sequencelayout.SequenceLayout>-->
+
+                        <!--<LinearLayout-->
+                        <!--android:id="@+id/lnr_reschedule"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:layout_marginRight="15dp"-->
+                        <!--android:background="@drawable/round_border"-->
+                        <!--android:gravity="center"-->
+                        <!--android:onClick="@{(view) -> handler.onRescheduleClicked(view)}"-->
+                        <!--app:layout_constraintRight_toRightOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@id/txt_quantity">-->
+
+                        <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:text="RESCHEDULE"-->
+                        <!--android:textColor="@color/colorPrimaryDark" />-->
+
+                        <!--</LinearLayout>-->
+                        <View
+                            android:id="@+id/view3"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/tab_textColor"
+                            app:layout_constraintTop_toBottomOf="@id/txt_quantity" />
+
+                        <LinearLayout
+                            android:id="@+id/lnr_complaint"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@id/view3"
+                            android:onClick="@{(view) -> handler.onComplaintClicked(view)}"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="COMPLAINT"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/view1"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/tab_textColor"
+                            app:layout_constraintTop_toBottomOf="@id/lnr_complaint" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@id/view1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CANCEL THIS SERVICE"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:paddingTop="20dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:text="Service Details" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycle_services"
+                            android:layout_width="match_parent"
+                            android:layout_margin="12dp"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            android:layout_height="wrap_content">
+                        </android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
+                </android.support.constraint.ConstraintLayout>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cl_head"
+                    android:layout_marginTop="7dp"
+                    android:background="#fff">
+
+                    <TextView
+                        android:id="@+id/txt_PaymentDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Payment Details"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/btn_delexp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/btn_delexp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="76dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+
+                        android:lineSpacingMultiplier="1.2"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        app:layout_constraintRight_toRightOf="parent"
+
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/txt_dst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="30dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+
+                        android:text="Service Cost"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/btn_delexp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_PaymentDetails" />
+
+                    <TextView
+                        android:id="@+id/txt_centralgst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+
+                        android:text="Central GST @8.0%"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/btn_delexp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_dst" />
+
+                    <TextView
+                        android:id="@+id/txt_Stategst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+
+                        android:text="State GST @ 8.0%"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/btn_delexp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_centralgst" />
+
+                    <!--<View-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="5dp"-->
+                    <!--android:background="@drawable/divider_container"-->
+                    <!--android:layerType="software"-->
+                    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                    <!--app:layout_constraintRight_toRightOf="parent"-->
+                    <!--app:layout_constraintTop_toBottomOf="@+id/txt_dst" />-->
+
+
+                    <TextView
+                        android:id="@+id/txt_centralrs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+
+                        android:text="67.50rs"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_delexp" />
+
+
+                    <TextView
+                        android:id="@+id/txt_staters"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+
+                        android:text="67.50rs"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_centralrs" />
+
+
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_Stategst" />
+
+
+                    <TextView
+                        android:id="@+id/txt_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="10dp"
+                        android:text="Total Payable Amount"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view" />
+
+                    <TextView
+                        android:id="@+id/final_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+
+                        android:text="fds"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintRight_toRightOf="parent"
+
+                        app:layout_constraintTop_toBottomOf="@id/view"
+
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/round_button_bg"
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="MAKE PAYMENT"
+                        android:textColor="@color/white"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/final_amount" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cl_head"
+                    android:layout_marginTop="7dp"
+                    android:background="#fff">
+
+                    <TextView
+                        android:id="@+id/txt_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingBottom="10dp"
+                        android:text="Contact Details"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/txt_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="Arjun Bhatt | 7700066803"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/view2"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_contact" />
+
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_name" />
+
+
+                    <TextView
+                        android:id="@+id/txt_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="Total Payable Amount"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view2" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

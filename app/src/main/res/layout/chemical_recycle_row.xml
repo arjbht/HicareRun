@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:id = "@+id/relativeLayout1"
+        android:layout_width = "fill_parent"
+        android:layout_height = "35dp"
+        android:gravity="center">
+
+        <TextView
+            android:id = "@+id/chem_name"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "2.5"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:padding = "5dp"
+            android:gravity="center"
+            android:text = "dsds"
+            android:singleLine = "true" />
+
+        <TextView
+            android:id = "@+id/chem_consumption"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1.5"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:gravity="center"
+            android:padding = "5dp"
+            android:text = "gram"
+            android:singleLine = "true" />
+
+        <TextView
+            android:id = "@+id/chem_standard"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1.1"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:gravity="center"
+            android:padding = "5dp"
+            android:text = "10"
+            android:singleLine = "true" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:padding = "5dp"
+            android:layout_weight="1.1">
+            <EditText
+                android:id = "@+id/edt_actual"
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:inputType="number"
+                android:textSize="15dp"
+                android:background="@drawable/edit_border"
+                android:focusable="true"
+                android:gravity="center"
+                android:singleLine = "true" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</layout>

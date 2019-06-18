@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data></data>
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.FragmentComplaint">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <!-- TODO: Update blank fragment layout -->
+            <com.mreram.ticketview.TicketView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tv_anchor1="@+id/cl_head"
+                android:layout_marginBottom="5dp"
+                app:tv_anchor2="@+id/cl_center">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/zigzagbg">
+
+
+                    <TextView
+                        android:id="@+id/txt_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Service Name :"
+                        android:textColor="#fff"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/cl_head"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/white">
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/service_name"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="10dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:lineSpacingMultiplier="1.2"-->
+                        <!--android:paddingTop="20dp"-->
+                        <!--android:paddingBottom="10dp"-->
+                        <!--android:text="xyz"-->
+                        <!--android:textColor="#000"-->
+                        <!--android:textSize="12sp"-->
+                        <!--app:layout_constraintLeft_toRightOf="@+id/txt_service_name"-->
+                        <!--app:layout_constraintRight_toRightOf="parent"-->
+                        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txt_service_name"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginStart="15dp"-->
+                        <!--android:layout_marginLeft="15dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:lineSpacingMultiplier="1.2"-->
+                        <!--android:paddingTop="20dp"-->
+                        <!--android:paddingBottom="10dp"-->
+                        <!--android:text="Service Name :"-->
+                        <!--android:textColor="#000"-->
+                        <!--android:textSize="12sp"-->
+                        <!--app:layout_constraintHorizontal_chainStyle="spread"-->
+                        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                        <!--app:layout_constraintRight_toLeftOf="@id/txt_src"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                       />
+
+
+                    <TextView
+                        android:id="@+id/order_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="123"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toRightOf="@+id/txt_order_number"
+                        app:layout_constraintRight_toRightOf="parent"
+                      />
+
+
+                    <TextView
+                        android:id="@+id/txt_order_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Order Number :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/order_number"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                         />
+
+
+                    <TextView
+                        android:id="@+id/service_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="123"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toRightOf="@+id/txt_service_number"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/order_number" />
+
+
+                    <TextView
+                        android:id="@+id/txt_service_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Service Number :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/txt_order_number"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_order_number" />
+
+
+                    <TextView
+                        android:id="@+id/service_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="17dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="123"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toRightOf="@+id/txt_service_date"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/service_number" />
+
+
+                    <TextView
+                        android:id="@+id/txt_service_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Service Date :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/txt_order_number"
+                        app:layout_constraintRight_toLeftOf="@id/service_date"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_service_number" />
+
+                    <View
+                        android:id="@+id/view1"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_margin="7dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_service_date" />
+
+                    <TextView
+                        android:id="@+id/txt_complaint_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Complaint Type :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view1" />
+
+
+                    <RadioGroup
+                        android:id="@+id/radio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/txt_complaint_type">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Behaviour" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Service Effectiveness" />
+
+                    </RadioGroup>
+
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_margin="7dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/radio" />
+
+                    <TextView
+                        android:id="@+id/txt_complaint_subtype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Complaint SubType :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view2" />
+
+
+                    <View
+                        android:id="@+id/view3"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_margin="7dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_complaint_subtype" />
+
+                    <TextView
+                        android:id="@+id/txt_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="Comment :"
+                        android:textColor="#000"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view3" />
+
+                    <EditText
+                        android:id="@+id/edt_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/border"
+                        android:gravity="top|left"
+                        android:lineSpacingMultiplier="1.2"
+                        android:lines="8"
+                        android:maxLines="10"
+                        android:minLines="6"
+                        android:scrollbars="vertical"
+                        android:textSize="12sp"
+                        app:layout_constraintTop_toBottomOf="@id/txt_comment" />
+
+                    <View
+                        android:id="@+id/view4"
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"
+                        android:layout_margin="7dp"
+                        android:background="@drawable/divider_container"
+                        android:layerType="software"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/edt_comment" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/txtBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cl_center"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/bg_ticketbottom"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="SUBMIT"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+
+            </com.mreram.ticketview.TicketView>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</FrameLayout>
+</layout>

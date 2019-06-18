@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="handler"
+            type="com.arj.hicarehygiene.handler.UserAccountClickHandler" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@color/tab_textColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".fragments.AccountFragment">
+
+                <!-- TODO: Update blank fragment layout -->
+
+                <LinearLayout
+                    android:id="@+id/lnr_accnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@color/white"
+                    android:onClick="@{(view) -> handler.onEditProfileClicked(view)}">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/edt_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/img_tumbnail"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_auser"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/txt_username"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:text="Name"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+                            app:layout_constraintLeft_toRightOf="@+id/img_tumbnail"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_userdetails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:text="223344555 | asfadaf@gmail.com"
+                            app:layout_constraintLeft_toRightOf="@+id/img_tumbnail"
+                            app:layout_constraintTop_toBottomOf="@id/txt_username" />
+
+                        <ImageView
+                            android:id="@+id/edit_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_btn_edit"
+                            android:tint="@color/black"
+
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:background="@color/white"
+
+                    android:orientation="vertical">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:onClick="@{(view) -> handler.onNotificationClicked(view)}">
+
+                        <ImageView
+                            android:id="@+id/img_notification"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_notification"
+                            android:tint="@color/colorPrimaryDark"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_notify"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="Notification"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_notification"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tab_textColor" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:onClick="@{(view) -> handler.onMyOrdersClicked(view)}">
+
+                        <ImageView
+                            android:id="@+id/img_orders"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_truck"
+                            android:tint="@color/colorPrimaryDark"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_order"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="My Orders"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_orders"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tab_textColor" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:onClick="@{(view) -> handler.onMyWalletClicked(view)}">
+
+                        <ImageView
+                            android:id="@+id/img_wallet"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_wallet"
+                            android:tint="@color/colorPrimaryDark"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_wallet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="My Wallet"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_wallet"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tab_textColor" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:onClick="@{(view) -> handler.onManageAddressClicked(view)}">
+
+                        <ImageView
+                            android:id="@+id/img_address"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_address"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="Manage Address"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_address"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tab_textColor" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp">
+
+                        <ImageView
+                            android:id="@+id/img_Rateus"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_stars"
+                            android:tint="@color/colorPrimaryDark"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="Rate Us"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_Rateus"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tab_textColor" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:onClick="@{(view) -> handler.onHelpClicked(view)}">
+
+                        <ImageView
+                            android:id="@+id/img_help"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:src="@drawable/ic_quest"
+                            android:tint="@color/colorPrimaryDark"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_help"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:text="Help"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/img_help"
+                            app:layout_constraintTop_toBottomOf="parent" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_right"
+                            android:tint="@color/black"
+                            app:layout_constraintRight_toRightOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+
+                </LinearLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@color/white"
+                    android:onClick="@{(view) -> handler.onSignoutClicked(view)}"
+
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SIGN OUT"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp"
+                        app:layout_constraintBottom_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="parent"
+                        app:layout_constraintRight_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="V 1.0"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        app:layout_constraintBottom_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="parent"
+                        app:layout_constraintRight_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

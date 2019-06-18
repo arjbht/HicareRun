@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+    </data>
+    <RelativeLayout
+        android:id="@+id/activity_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="com.ncrypted.dempproject.Profile">
+
+
+
+        <RelativeLayout
+            android:id="@+id/rel_pic"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_below="@+id/toolbar"
+            android:background="@drawable/profile_bg">
+
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageview_account_profile"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/avatar"
+                app:civ_border_color="@color/colorPrimaryDark"
+                app:civ_border_width="0.5dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignEnd="@+id/imageview_account_profile"
+                android:layout_alignRight="@+id/imageview_account_profile"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="67dp"
+                android:layout_marginEnd="-10dp"
+                android:layout_marginRight="-4dp"
+                android:src="@drawable/ic_edit_white_24dp" />
+
+        </RelativeLayout>
+
+
+        <ScrollView
+            android:id="@+id/scrolView_account"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rel_pic"
+            android:background="@color/white"
+            >
+
+
+            <RelativeLayout
+                android:id="@+id/linear_account"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="profile Details"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textColorHint="@color/colorPrimary">
+
+                            <EditText
+                                android:id="@+id/edt_username"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Username"
+                                android:imeOptions="actionNext"
+                                android:textColorHint="@color/colorPrimary" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+
+                            android:textColorHint="@color/colorPrimary">
+
+                            <EditText
+                                android:id="@+id/edt_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Email Address"
+                                android:imeOptions="actionNext"
+                                android:inputType="textEmailAddress"
+                                android:textColorHint="@color/colorPrimary" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textColorHint="@color/colorPrimary">
+
+                            <EditText
+                                android:id="@+id/edt_mobile"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Mobile"
+                                android:inputType="number"
+                                android:imeOptions="actionNext"
+                                android:textColorHint="@color/colorPrimary" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:text="UPDATE"
+                            android:textColor="@color/white"
+                            android:background="@drawable/button_border"
+                            />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+</layout>

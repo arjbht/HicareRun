@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraint2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <LinearLayout
+                    android:id="@+id/lnr_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/lnr_select"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:gravity="center">
+
+                    <net.igenius.customcheckbox.CustomCheckBox
+                        android:id="@+id/check_attach"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:paddingLeft="5dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/img_job"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="Service Plan"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_name"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="kjhfdkjs/uhfurwf/fufu.jpg"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="MissingConstraints" />
+
+                        <LinearLayout
+                            android:id="@+id/lnr_added"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="3dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/lnr_image">
+
+                            <TextView
+                                android:layout_width="50dp"
+                                android:layout_height="wrap_content"
+                                android:text="Added"
+                                android:textSize="14dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=":"
+                                android:textSize="14dp" />
+
+                            <TextView
+                                android:id="@+id/txt_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="13/05/2019 12safsfffafadfdfdfafaf:53 PM"
+                                android:textSize="14dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/tab_textColor"
+                    app:layout_constraintBottom_toBottomOf="@id/lnr_image"/>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+
+        <!--<variable-->
+        <!--name="model"-->
+        <!--type="com.hicarepestcontrol.viewmodel.OrderViewModel" />-->
+
+        <!--<variable-->
+        <!--name="handler"-->
+        <!--type="com.hicarepestcontrol.handler.UserOrderClickHandler" />-->
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraint1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/txt_sequence"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/circle"
+                android:gravity="center"
+                android:text="12"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/txt_price"
+                app:layout_constraintRight_toLeftOf="@id/txt_price"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/txt_treatment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:paddingTop="5dp"
+                android:text="Service Step : TREATMENT"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/txt_sequence"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toEndOf="@id/txt_sequence"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="6dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Scheduled on :22nd, Mar 2019"
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toRightOf="@+id/txt_sequence"
+                app:layout_constraintTop_toBottomOf="@id/txt_treatment"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/txt_close_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="4dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Closed on :22nd, Mar 2019"
+                android:textColor="@color/colorTextDrawerSecondary"
+                android:visibility="gone"
+                app:layout_constraintLeft_toRightOf="@+id/txt_sequence"
+                app:layout_constraintTop_toBottomOf="@id/txt_date"
+                tools:ignore="MissingConstraints" />
+
+
+            <TextView
+                android:id="@+id/txt_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:paddingTop="4dp"
+                android:paddingBottom="5dp"
+                android:text="Service Status : CANCELLED"
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toRightOf="@+id/txt_sequence"
+                app:layout_constraintTop_toBottomOf="@id/txt_close_date" />
+
+            <LinearLayout
+                android:id="@+id/lnr_reschedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/round_border"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:text="RESCHEDULE"
+                    android:textColor="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraint2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/constraint1">
+
+
+            <TextView
+                android:id="@+id/txt_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Technician Details"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/txt_tech_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Technician Name: Santa Banta"
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_details"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/txt_tech_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Technician Name: Santa Banta"
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_tech_name"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/txt_assignment_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="6dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Assignment Start Time: "
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_tech_mobile"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/txt_technician_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="6dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Technician Status : CLOSED"
+                android:textColor="@color/colorTextDrawerSecondary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_assignment_start"
+
+                tools:ignore="MissingConstraints" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

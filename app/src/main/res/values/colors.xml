@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2bb77a</color>
+    <color name="colorPrimaryDark">#217d55</color>
+    <color name="colorAccent">#2bb77a</color>
+    <color name="colorbottom">#536DFE</color>
+
+    <color name="colorAccentOrange">#FF5722</color>
+    <color name="lightorange">#ffff8800</color>
+    <color name="maroon">#8B0000</color>
+    <color name="bggrey">#FFDDDDDD</color>
+
+    <color name="colorAccentDrawerPrimaryDark">#24272c</color>
+    <color name="colorAccentDrawerPrimary">#27313d</color>
+    <color name="colorAccentDrawerPrimaryLight">#424951</color>
+    <color name="colorTextDrawerPrimary">#fff</color>
+    <color name="colorTextDrawerSecondary">#9199a6</color>
+    <color name="black">#000000</color>
+    <color name="lightblack">#191919</color>
+    <color name="white">#ffffff</color>
+    <color name="icons">#4AAF4F</color>
+    <color name="dashboard_icons">#4AAF4F</color>
+    <color name="tab_indicatorColor">#0c8c12</color>
+    <color name="tab_textColor">#CFD8DC</color>
+    <color name="transparent">#00000000</color>
+    <color name="grey">#808080</color>
+    <color name="mint">#98fb98</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="gold">#FFD700</color>
+    <color name="transparent_black">#66000000</color>
+    <color name="cv_capture_bg">#55000000</color>
+
+
+
+</resources>

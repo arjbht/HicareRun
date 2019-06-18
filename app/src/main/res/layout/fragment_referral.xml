@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="handler"
+            type="com.ab.hicarerun.handler.UserReferralClickHandler" />
+
+        <variable
+            name="model"
+            type="com.ab.hicarerun.viewmodel.ReferralViewModel" />
+    </data>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tab_textColor"
+        tools:context=".fragments.ReferralFragment">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="center">-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/recycleView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
+
+                <!--</android.support.v7.widget.RecyclerView>-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                    <!--android:id="@+id/txt_data"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:layout_margin="10dp"-->
+                    <!--android:text="No Items"-->
+                    <!--android:textSize="14dp" />-->
+            <!--</RelativeLayout>-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tab_textColor"
+                >
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefreshLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/progressBar"
+                    >
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycleView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        />
+
+
+                </android.support.v4.widget.SwipeRefreshLayout>
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/txt_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="10dp"
+                    android:text="No Items"
+                    android:textSize="14dp" />
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    />
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:tint="@color/white"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="@{(view) -> handler.onAddReferralClicked(view)}"
+            android:src="@drawable/ic_add" />
+
+    </FrameLayout>
+
+</layout>

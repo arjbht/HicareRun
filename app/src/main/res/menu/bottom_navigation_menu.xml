@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_general"
+        android:title="General"
+        android:icon="@drawable/ic_general"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+
+    <item
+        android:id="@+id/nav_chemicals"
+        android:title="Chemicals"
+        android:icon="@drawable/ic_chemical"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+    <item
+        android:id="@+id/nav_referral"
+        android:title="Referral"
+        android:icon="@drawable/ic_referral"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+
+    <item
+        android:id="@+id/nav_payment"
+        android:title="Payment"
+        android:icon="@drawable/ic_card"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+    <item
+        android:id="@+id/nav_signature"
+        android:title="Signature"
+        android:icon="@drawable/ic_user"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+
+</menu>

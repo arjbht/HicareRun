@@ -1,0 +1,246 @@
+<resources>
+    <string name="app_name">Hicare Run</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+    <string name="invalid_userid">Invalid UserId</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="runtime_permissions_txt">Permissions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Save</string>
+    <string name="upload_job_card">Upload Job Card</string>
+    <string name="send_feedback_link">Send Feedback Link</string>
+    <string-array name="payment_mode">
+        <item>None</item>
+        <item>Cash</item>
+        <item>Cheque</item>
+        <item>Paytm</item>
+    </string-array>
+
+    <string-array name="bank_name">
+        <!--<item>None</item>-->
+        <item>Bank of Baroda</item>
+        <item>Bank of India</item>
+        <item>Bank of Maharashtra</item>
+        <item>Canara Bank</item>
+        <item>Central Bank of India</item>
+        <item>Corporation Bank</item>
+        <item>Dena Bank</item>
+        <item>Indian Bank</item>
+        <item>Indian Overseas Bank</item>
+        <item>IDBI Bank</item>
+        <item>Oriental Bank of Commerce</item>
+        <item>Punjab &amp; Sindh Bank</item>
+        <item>Punjab National Bank</item>
+        <item>State Bank of India</item>
+        <item>Syndicate Bank</item>
+        <item>UCO Bank</item>
+        <item>Union Bank of India</item>
+        <item>Vijaya Bank</item>
+        <item>Axis Bank</item>
+        <item>Bandhan Bank</item>
+        <item>Catholic Syrian Bank</item>
+        <item>City Union Bank</item>
+        <item>DCB Bank</item>
+        <item>Dhanlaxmi Bank</item>
+        <item>Federal Bank</item>
+        <item>HDFC Bank</item>
+        <item>ICICI Bank</item>
+        <item>IndusInd Bank</item>
+        <item>Jammu and Kashmir Bank</item>
+        <item>Karnataka Bank</item>
+        <item>Karur Vysya Bank</item>
+        <item>Kotak Mahindra Bank</item>
+        <item>Lakshmi Vilas Bank</item>
+        <item>Nainital Bank</item>
+        <item>RBL Bank</item>
+        <item>South Indian Bank</item>
+        <item>Tamilnad Mercantile Bank</item>
+        <item>YES Bank</item>
+        <item>A U Small Finance Bank</item>
+        <item>Equitas Small Finance Bank</item>
+        <item>Ujjivan Small Finance Bank</item>
+        <item>Utkarsh Small Finance Bank</item>
+        <item>Janalakshmi Small Finance Bank</item>
+        <item>Capital Lab Small Finance Bank</item>
+        <item>Disha Small Finance Bank</item>
+        <item>ESAF Small Finance Bank</item>
+        <item>RGVN Small Finance Bank</item>
+        <item>Suryoday Small Finance Bank</item>
+        <item>Coastal Local Area Bank Limited</item>
+        <item>Krishna Bhima Samruddhi Local Area Bank Limited</item>
+        <item>Subhadra Local Area Bank Limited</item>
+        <item>India Post Payments Bank</item>
+        <item>Fino Payment Bank</item>
+        <item>Fino Payment Bank</item>
+        <item>Airtel Payments Bank</item>
+        <item>Paytm Payments Bank</item>
+        <item>Australia and New Zealand Banking Group</item>
+        <item>Commonwealth Bank of Australia</item>
+        <item>National Australia Bank</item>
+        <item>Westpac Banking Corporation</item>
+        <item>Bank of Bahrain and Kuwait</item>
+        <item>AB Bank</item>
+        <item>Sonali Bank</item>
+        <item>Antwerp Diamond Bank</item>
+        <item>Bank of Nova Scotia</item>
+        <item>Industrial &amp; Commercial Bank of China</item>
+        <item>BNP Paribas</item>
+        <item>Credit Agricole</item>
+        <item>Societe Generale</item>
+        <item>Deutsche Bank</item>
+        <item>Mizuho Corporate Bank</item>
+        <item>Sumitomo Mitsui Banking</item>
+        <item>Bank of Tokyo-Mitsubishi</item>
+        <item>State Bank of Mauritius</item>
+        <item>Rabobank</item>
+        <item>Doha bank</item>
+        <item>Sberbank</item>
+        <item>VTB</item>
+        <item>HSBC Bank Oman</item>
+        <item>DBS Bank United Overseas Bank</item>
+        <item>FirstRand Bank</item>
+        <item>Shinhan Bank</item>
+        <item>Woori Bank</item>
+        <item>Bank of Ceylon</item>
+        <item>Credit Suisse</item>
+        <item>UBS AG</item>
+        <item>Chinatrust Commercial Bank</item>
+        <item>Krung Thai Bank</item>
+        <item>Abu Dhabi Commercial Bank</item>
+        <item>Mashreq Bank</item>
+        <item>HSBC</item>
+        <item>Barclays Bank</item>
+        <item>Standard Chartered Bank</item>
+        <item>American Express</item>
+        <item>Bank of America</item>
+        <item>Citibank</item>
+        <item>J.P. Morgan Chase Bank</item>
+        <item>Andaman and Nicobar State Co-operative Bank Ltd.</item>
+        <item>Andhra Pradesh State Co-operative Bank Ltd.</item>
+        <item>Arunachal Pradesh State co-operative Apex Bank Ltd.</item>
+        <item>Assam Co-operative Apex Bank Ltd.</item>
+        <item>Bihar State Co-operative Bank Ltd.</item>
+        <item>Chandigarh State Co-operative Bank Ltd.</item>
+        <item>Delhi State Co-operative Bank Ltd.</item>
+        <item>Goa State Co-operative Bank Ltd.</item>
+        <item>Gujarat State Co-operative Bank Ltd.</item>
+        <item>Haryana State Co-opertive Apex Bank Ltd.</item>
+        <item>Himachal Pradesh State Co-operative Bank Ltd.</item>
+        <item>Jammu and Kashmir State Co-operative Bank Ltd.</item>
+        <item>Karnataka State Co-operative Apex Bank Ltd.</item>
+        <item>Madhya Pradesh Rajya Sahakari Bank Maryadit</item>
+        <item>Maharashtra State Co-operative Bank Ltd.</item>
+        <item>Manipur State Co-operative Bank Ltd.</item>
+        <item>Meghalaya Co-operative Apex Bank Ltd.</item>
+        <item>Mizoram Co-operative Apex Bank Ltd.</item>
+        <item>Nagaland State Co-operative Bank Ltd.</item>
+        <item>Orissa State Co-operative Bank Ltd.</item>
+        <item>Pondichery State Co-opertive Bank Ltd.</item>
+        <item>Punjab State Co-operative Bank Ltd.</item>
+        <item>Rajasthan State Co-operative Bank Ltd.</item>
+        <item>Sikkim State Co-operative Bank Ltd.</item>
+        <item>Tamil Nadu State Apex Co-operative Bank Ltd.</item>
+        <item>Tripura State Co-operative Bank Ltd.</item>
+        <item>Uttar Pradesh Co-operative Bank Ltd.</item>
+        <item>West Bengal State Co-operative Bank Ltd.</item>
+        <item>Chhattisgarh RajyaSahakari Bank Maryadit</item>
+        <item>Uttarakhand State Co-operative Bank Ltd.</item>
+        <item>Raiffeisen Zentralbank</item>
+        <item>KBC Bank</item>
+        <item>Royal Bank of Canada</item>
+        <item>Toronto Dominion Bank</item>
+        <item>Credit Industriel et Commercial</item>
+        <item>Natixis</item>
+        <item>Commerzbank</item>
+        <item>Commerzbank</item>
+        <item>DZ Bank</item>
+        <item>KfW</item>
+        <item>Landesbank Baden</item>
+        <item>Banca Monte dei Paschi di Siena</item>
+        <item>Banca Popolare di Milano</item>
+        <item>Intesa Sanpaolo</item>
+        <item>UBI Banca"</item>
+        <item>CIMB</item>
+        <item>Everest Bank</item>
+        <item>DNB ASA</item>
+        <item>Caixa Geral de Depositos</item>
+        <item>Gazprombank</item>
+        <item>Promsvyazbank</item>
+        <item>Vnesheconombank</item>
+        <item>Industrial Bank of Korea</item>
+        <item>Kookmin Bank</item>
+        <item>Korea Exchange Bank</item>
+        <item>Banco de Sabadell</item>
+        <item>Banco Bilbao Vizcaya Argentaria</item>
+        <item>Caixabank</item>
+        <item>Hatton National Bank</item>
+        <item>Skandinaviska Enskilda Banken</item>
+        <item>Zurich Cantonal Bank</item>
+        <item>Bank of Taiwan</item>
+        <item>Mega International Commercial Bank</item>
+        <item>Bank Asya</item>
+        <item>Emirates NBD</item>
+        <item>First Gulf Bank</item>
+        <item>Duncan Lawrie</item>
+        <item>Bank of New York Mellon</item>
+        <item>Wells Fargo Bank</item>
+        <item>Development Bank of Singapore</item>
+        <item>Andhra Pradesh Grameena Vikas Bank</item>
+        <item>Chaitanya Godavari Grameena Bank</item>
+        <item>Saptagiri Grameena Bank</item>
+        <item>Assam Gramin Vikash Bank</item>
+        <item>Langpi Dehangi Rural Bank</item>
+        <item>Arunachal Pradesh Rural Bank</item>
+        <item>Uttar Bihar Gramin Bank</item>
+        <item>Madhya Bihar Gramin Bank</item>
+        <item>Bihar Gramin Bank</item>
+        <item>Chhattisgarh Rajya Gramin Bank</item>
+        <item>Dena Gujarat Gramin Bank</item>
+        <item>Baroda Gujarat Gramin Bank</item>
+        <item>Saurashtra Gramin Bank</item>
+        <item>Sarva Haryana Gramin Bank</item>
+        <item>Himachal Pradesh Gramin Bank</item>
+        <item>Jharkhand Gramin Bank</item>
+        <item>Vananchal Gramin Bank</item>
+        <item>Jammu And Kashmir Grameen Bank</item>
+        <item>Ellaquai Dehati Bank</item>
+        <item>Kaveri Grameena Bank</item>
+        <item>Karnataka Vikas Grameena Bank</item>
+        <item>Pragathi Krishna Gramin Bank</item>
+        <item>Kerala Gramin Bank</item>
+        <item>Narmada Jhabua Gramin Bank</item>
+        <item>Central Madhya Pradesh Gramin Bank</item>
+        <item>Madhyanchal Gramin Bank</item>
+        <item>Maharashtra Gramin Bank</item>
+        <item>Vidarbha Kokan Gramin Bank</item>
+        <item>Manipur Rural Bank</item>
+        <item>Meghalaya Rural Bank</item>
+        <item>Mizoram Rural Bank</item>
+        <item>Nagaland Rural Bank</item>
+        <item>Odisha Gramya Bank</item>
+        <item>Utkal Grameen Bank</item>
+        <item>Punjab Gramin Bank</item>
+        <item>Malwa Gramin Bank</item>
+        <item>Sutlej Gramin Bank</item>
+        <item>Puduvai Bharathiar Grama Bank</item>
+        <item>Baroda Rajasthan Kshetriya Gramin Bank</item>
+        <item>Marudhara Rajasthan Gramin Bank</item>
+        <item>Pandyan Grama Bank</item>
+        <item>Pallavan Grama Bank</item>
+        <item>Telangana Grameena Bank</item>
+        <item>Tripura Gramin Bank</item>
+        <item>Sarva UP Gramin Bank</item>
+        <item>Prathama Bank</item>
+        <item>Allahabad UP Gramin Bank</item>
+        <item>Baroda UP Gramin Bank</item>
+        <item>Gramin Bank Of Aryavrat</item>
+        <item>Kashi Gomti Samyukt Gramin Bank</item>
+        <item>Purvanchal Bank</item>
+        <item>Uttarakhand Gramin Bank</item>
+        <item>Bangiya Gramin Vikash Bank</item>
+        <item>Paschim Banga Gramin Bank</item>
+        <item>Uttarbanga Kshetriya Gramin Bank</item>
+    </string-array>
+</resources>
