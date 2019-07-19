@@ -81,12 +81,15 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
             if (isVerified || status.equals("Completed")) {
                 holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#000000"));
+                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+            } else if (status.equals("Incomplete")) {
+                holder.mChemicalRecycleRowBinding.edtActual.setText("-");
                 holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
                 holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-            } else if (status.equals("Completed") || status.equals("Incomplete")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
-                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
+            } else if (status.equals("Dispatched")) {
                 holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
             } else {
                 holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -101,18 +104,18 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     @Override
                     public void afterTextChanged(Editable s) {
                         try {
-                            if (s.toString().length() != 0) {
-                                ChemicalNo = Integer.parseInt(s.toString().trim());
-                                double v = Double.parseDouble(model.getStandard());
-                                standardChem = (int) v;
-                                if (ChemicalNo > standardChem) {
-                                    holder.mChemicalRecycleRowBinding.edtActual.setError("Actual value should not be greater than standard value.");
-                                } else {
-                                    onEditTextChanged.onTextChanged(position, s.toString());
-                                }
-                            } else {
-                                onEditTextChanged.onTextChanged(position, s.toString());
-                            }
+//                            if (s.toString().length() != 0) {
+//                                ChemicalNo = Integer.parseInt(s.toString().trim());
+//                                double v = Double.parseDouble(model.getStandard());
+//                                standardChem = (int) v;
+//                                if (ChemicalNo > standardChem) {
+//                                    holder.mChemicalRecycleRowBinding.edtActual.setError("Actual value should not be greater than standard value.");
+//                                } else {
+//                                    onEditTextChanged.onTextChanged(position, s.toString());
+//                                }
+//                            } else {
+                            onEditTextChanged.onTextChanged(position, s.toString());
+//                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

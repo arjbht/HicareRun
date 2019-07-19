@@ -25,7 +25,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="14dp"
             android:layout_gravity="center_horizontal"
-            android:text="Hicare will send a feedback link to your phone number and email-id."
+            android:text="@string/feedback_link"
             />
         </LinearLayout>
 

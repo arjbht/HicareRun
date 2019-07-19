@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ab.hicarerun"
-    android:versionCode="1"
-    android:versionName="1.0">
+    package="com.ab.hicarerun">
+
+    <permission
+        android:name="android.permission.CALL_PRIVILEGED"
+        android:protectionLevel="signature|privileged" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -12,37 +14,67 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission
+        android:name="android.permission.BATTERY_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
 
     <permission android:name="android.permission.FLASHLIGHT" />
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true"/>
 
-    <uses-feature android:name="android.hardware.camera" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:hardwareAccelerated="true"
         android:largeHeap="true"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activities.GrommingGalleryActivity"
+            android:parentActivityName=".activities.TechnicianSeniorActivity"></activity>
+        <activity android:name=".activities.TechnicianSeniorActivity"
+            android:parentActivityName=".activities.HomeActivity"/>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".activities.ExoplayerActivity" />
+        <activity
+            android:name=".activities.VerifyOtpActivity"
+            android:parentActivityName=".activities.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.TrainingActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.HelpActivity"
+            android:parentActivityName=".activities.HomeActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".BaseApplication" />
-        <activity android:name=".activities.HomeActivity" />
-        <activity android:name=".activities.SplashActiviy">
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.SplashActiviy"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,10 +83,11 @@
         </activity>
         <activity
             android:name=".activities.TaskDetailsActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:exported="true"
+            android:parentActivityName=".activities.HomeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <service android:name=".service.ServiceLocationSend"/>
+        <service android:name=".service.ServiceLocationSend" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -64,14 +97,40 @@
             tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/picker_provider_paths" />
+                android:resource="@xml/picker_provider_paths"
+                tools:replace="android:resource" />
         </provider>
 
-        <activity android:name=".activities.AttachmentActivity"></activity>
+        <activity android:name=".activities.AttachmentActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face" />
+
+        <receiver android:name=".utils.SMSListener">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="com.ezetap.sdk.EzetapFileProvider"
+            android:authorities="com.ezeapi.sample.EzetapFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <provider
+            android:name=".utils.DownloadFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/download_provider_paths" />
+        </provider>
     </application>
 
 </manifest>

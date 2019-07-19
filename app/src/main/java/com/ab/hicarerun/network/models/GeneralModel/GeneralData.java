@@ -67,7 +67,7 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Customer_OTP;
 
-    @SerializedName("Signatory")
+    @SerializedName("CustomerSign")
     @Expose
     private String Signatory;
 
@@ -135,6 +135,17 @@ public class GeneralData implements RealmModel {
     @SerializedName("IncentivePoint")
     @Expose
     private String IncentivePoint;
+    @SerializedName("BankName")
+    @Expose
+    private String BankName;
+
+    @SerializedName("ChequeNo")
+    @Expose
+    private String ChequeNo;
+
+    @SerializedName("ChequeDate")
+    @Expose
+    private String ChequeDate;
 
     @SerializedName("ChequeImageUrl")
     @Expose
@@ -429,5 +440,29 @@ public class GeneralData implements RealmModel {
 
     public void setIncompleteReason(String incompleteReason) {
         IncompleteReason = incompleteReason;
+    }
+
+    public String getBankName() {
+        return BankName;
+    }
+
+    public void setBankName(String bankName) {
+        BankName = bankName;
+    }
+
+    public String getChequeNo() {
+        return ChequeNo;
+    }
+
+    public void setChequeNo(String chequeNo) {
+        ChequeNo = chequeNo;
+    }
+
+    public String getChequeDate() {
+        return ChequeDate;
+    }
+
+    public void setChequeDate(String chequeDate) {
+        ChequeDate = chequeDate;
     }
 }

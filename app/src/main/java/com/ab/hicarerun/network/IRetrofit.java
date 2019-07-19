@@ -5,6 +5,7 @@ import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
+import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
@@ -13,8 +14,12 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
+import com.ab.hicarerun.network.models.LoggerModel.ErrorLogRequest;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
+import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
+import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -22,6 +27,10 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
+import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
+import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
+import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
+import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 
 import java.util.List;
 
@@ -42,7 +51,11 @@ public interface IRetrofit {
     String BASE_URL = "http://52.74.65.15/mobileapi/api/";
 
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
-//    http://apps.hicare.in/apps/api/login
+
+    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
+
+    @GET("userverification/VerifyUser")
+    Call<SendOtpResponse> sendOtp(@Query("mobileno") String mobile, @Query("resendOtp") String isResend);
 
     @FormUrlEncoded
     @POST("Login")
@@ -96,20 +109,53 @@ public interface IRetrofit {
     @POST("ResourceActivity/PostResourceActivity")
     Call<ContinueHandShakeResponse> getContinueHandShake(@Body ContinueHandShakeRequest request);
 
-    @GET("applicationlogic/DialExotelNumber")
-    Call<ExotelResponse> getCallExotel(@Query("customerNo") String customerNo, @Query("techNo") String techNo);
-
     @GET("ChemicalConsumption/GetChemimcalDetails")
     Call<ChemicalResponse> getChemicals(@Query("taskId") String taskId);
 
     @POST("ResourceActivity/LogOut")
     Call<LogoutResponse> getLogout(@Query("resourceId") String UserId);
 
+    /*[Dial Customer]*/
 
-    /*    [Mark Attendance]*/
+    @GET("applicationlogic/DialExotelNumber")
+    Call<ExotelResponse> getCallExotel(@Query("customerNo") String customerNo, @Query("techNo") String techNo);
+
+    /*[Mark Attendance]*/
     @POST("ResourceActivity/PostResourceAttendance")
     Call<ContinueHandShakeResponse> getTechAttendance(@Body AttendanceRequest request);
 
     @POST("ResourceActivity/PostResourceProfilePic")
-    Call<ContinueHandShakeResponse> getProfilePic(@Body ProfilePicRequest request);
+    Call<HandShakeResponse> getProfilePic(@Body ProfilePicRequest request);
+
+    /*[Training Videos]*/
+
+    @GET("VideoUploader/GettrainingVideoDetails")
+    Call<TrainingResponse> getTrainingVideos();
+
+    /*[Error Log]*/
+
+    @POST("Log/Publish")
+    Call<String> sendErrorLog(@Body ErrorLogRequest request);
+
+    /*[Update APP api]*/
+
+    @GET("ResourceActivity/VersionCheck")
+    Call<UpdateResponse> getUpdateApp();
+
+    /*[Send Payment Link]*/
+
+    @POST("Payment/SendPaymentLink")
+    Call<PaymentLinkResponse> sendPaymentLink(@Body PaymentLinkRequest request);
+
+    /*[Get Technician Grooming]*/
+
+    @GET("TechnicianGrooming/GetDetails")
+    Call<TechGroomingResponse> getGroomingTechnicians(@Query("resourceId") String customerNo);
+
+    /*[Post Grooming Image]*/
+
+    @POST("TechnicianGrooming/UploadImage")
+    Call<BasicResponse> postGroomingImage(@Body TechGroomingRequest request);
+
+
 }

@@ -16,6 +16,7 @@
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:padding = "5dp"
+            android:textColor="@color/black"
             android:gravity="center"
             android:text = "dsds"
             android:singleLine = "true" />
@@ -28,6 +29,7 @@
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:gravity="center"
+            android:textColor="@color/black"
             android:padding = "5dp"
             android:text = "gram"
             android:singleLine = "true" />
@@ -40,6 +42,7 @@
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:gravity="center"
+            android:textColor="@color/black"
             android:padding = "5dp"
             android:text = "10"
             android:singleLine = "true" />
@@ -57,6 +60,7 @@
                 android:layout_height = "match_parent"
                 android:inputType="number"
                 android:textSize="15dp"
+                android:textColor="@color/black"
                 android:background="@drawable/edit_border"
                 android:focusable="true"
                 android:gravity="center"

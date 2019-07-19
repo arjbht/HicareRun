@@ -14,6 +14,7 @@ import com.ab.hicarerun.handler.OnJobCardEventHandler;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,12 +27,13 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
     List<GetAttachmentList> mAttachmentList = null;
 
     ActivityAttachmentBinding mActivityAttachmentBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivityAttachmentBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_attachment);
-       taskId = getIntent().getStringExtra(ARGS_TASKS);
+        taskId = getIntent().getStringExtra(ARGS_TASKS);
         addFragment(AttachmentFragment.newInstance(taskId), "AttachmentActivity - AttachmentFragment");
 
         setSupportActionBar(mActivityAttachmentBinding.toolbar);
@@ -43,22 +45,31 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
 
     @Override
     public void onBackPressed() {
-        overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
-        super.onBackPressed();
+        try {
+            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
+            super.onBackPressed();
+            getAttchmentBack();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void getAttchmentBack() {
         int fragment = getSupportFragmentManager().getBackStackEntryCount();
         Log.e("fragments", String.valueOf(fragment));
         if (fragment < 1) {
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putInt("listSize", mAttachmentList.size());
-            bundle.putBoolean("isJobCard", isJobCardBoolean);
-            intent.putExtras(bundle);
-            setResult(RESULT_OK, intent);
+            if (mAttachmentList != null && mAttachmentList.size() > 0) {
+                SharedPreferencesUtility.savePrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT, true);
+            } else {
+                SharedPreferencesUtility.savePrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT, false);
+            }
             finish();
         } else {
             getFragmentManager().popBackStack();
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -66,7 +77,7 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                getAttchmentBack();
                 break;
         }
 
@@ -82,6 +93,5 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
     @Override
     public void AttachmentList(List<GetAttachmentList> mList) {
         mAttachmentList = mList;
-
     }
 }

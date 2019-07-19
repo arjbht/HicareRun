@@ -25,6 +25,7 @@ public class AttendanceRequest {
     @SerializedName("IsLoggedIn") @Expose private Boolean IsLoggedIn;
     @SerializedName("IsGPSConnected") @Expose private Boolean IsGPSConnected;
     @SerializedName("ResourceImage") @Expose private String ResourceImage;
+    @SerializedName("SkipAttendance") @Expose private Boolean SkipAttendance;
 
     public AttendanceRequest() {
         TechId = "";
@@ -44,6 +45,8 @@ public class AttendanceRequest {
         IsLoggedIn = false;
         IsGPSConnected = false;
         ResourceImage = "";
+        SkipAttendance = false;
+
     }
 
     public String getTechId() {
@@ -181,5 +184,13 @@ public class AttendanceRequest {
 
     public void setResourceImage(String resourceImage) {
         ResourceImage = resourceImage;
+    }
+
+    public Boolean getSkipAttendance() {
+        return SkipAttendance;
+    }
+
+    public void setSkipAttendance(Boolean skipAttendance) {
+        SkipAttendance = skipAttendance;
     }
 }

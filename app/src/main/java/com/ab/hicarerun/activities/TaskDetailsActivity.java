@@ -1,6 +1,10 @@
 package com.ab.hicarerun.activities;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -8,7 +12,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -21,8 +24,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseActivity;
@@ -46,9 +51,14 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.SharedPreferencesUtility;
+import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
+import com.clock.scratch.ScratchView;
+//import com.goibibo.libs.views.ScratchRelativeLayoutView;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
@@ -60,6 +70,7 @@ import static com.ab.hicarerun.BaseApplication.getRealm;
 public class TaskDetailsActivity extends BaseActivity implements LocationManagerListner, OnSaveEventHandler {
     ActivityTaskDetailsBinding mActivityTaskDetailsBinding;
     public static final String ARGS_TASKS = "ARGS_TASKS";
+    public static final String TASK_DETAILS = "TASK_DETAILS";
     private static final int UPDATE_REQUEST = 1000;
     private String UserId = "";
     private String taskId = "";
@@ -81,6 +92,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private HashMap<Integer, String> mMap = null;
     private List<TaskChemicalList> ChemReqList = null;
     private LocationManagerListner mListner;
+    private boolean isAttachment = false;
     Tasks model;
     private String sta = "";
     private MenuItem menuItem;
@@ -88,6 +100,27 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private int Rate = 0;
     private TaskViewPagerAdapter mAdapter;
     private ProgressDialog progress;
+    private boolean isIncompleteReason = false;
+    private String bankName = "";
+    private String chequeNumber = "";
+    private String chequeDate = "";
+    private String chequeImage = "";
+    private boolean isSignatureValidated = false;
+    private boolean isAmountCollectedRequired = false;
+    private boolean isAmountCollectedEquals = false;
+    private boolean isBankNameRequired = false;
+    private boolean isChequeDateRequired = false;
+    private boolean isChequeNumberRequired = false;
+    private boolean isInvalidChequeNumber = false;
+    private boolean isChequeImageRequired = false;
+    private android.location.LocationManager locationManager;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppUtils.statusCheck(TaskDetailsActivity.this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,53 +139,72 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         builder.build();
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
-        getTaskDetailsById();
+        locationManager =
+                (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+                && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
+            getTaskDetailsById();
+        } else {
+            AppUtils.statusCheck(TaskDetailsActivity.this);
+        }
 
     }
 
     private void getTaskDetailsById() {
-        if (this != null) {
-            RealmResults<LoginResponse> LoginRealmModels =
-                    getRealm().where(LoginResponse.class).findAll();
+        try {
+            if (this != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        getRealm().where(LoginResponse.class).findAll();
 
-            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                UserId = LoginRealmModels.get(0).getUserID();
-                NetworkCallController controller = new NetworkCallController();
-                controller.setListner(new NetworkResponseListner<GeneralResponse>() {
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    UserId = LoginRealmModels.get(0).getUserID();
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner<GeneralResponse>() {
 
-                    @Override
-                    public void onResponse(int requestCode, GeneralResponse response) {
-                        // add new record
-                        getRealm().beginTransaction();
-                        getRealm().copyToRealmOrUpdate(response.getData());
-                        getRealm().commitTransaction();
-                        sta = response.getData().getSchedulingStatus();
-                        isIncentiveEnable = response.getData().getIncentiveEnable();
-                        Incentive = Integer.parseInt(response.getData().getIncentivePoint());
-                        isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
-                        TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
-                        setupNavigationView();
-                        setViewPagerView();
-                    }
+                        @Override
+                        public void onResponse(int requestCode, GeneralResponse response) {
+                            // add new record
+                            getRealm().beginTransaction();
+                            getRealm().copyToRealmOrUpdate(response.getData());
+                            getRealm().commitTransaction();
+                            sta = response.getData().getSchedulingStatus();
+                            isIncentiveEnable = response.getData().getIncentiveEnable();
+                            Incentive = Integer.parseInt(response.getData().getIncentivePoint());
+                            isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
+                            TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
+                            setupNavigationView();
+                            setViewPagerView();
+                        }
 
-                    @Override
-                    public void onFailure(int requestCode) {
-                    }
-                });
-                controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId());
+                        @Override
+                        public void onFailure(int requestCode) {
+                        }
+                    });
+                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId());
+                }
             }
+        } catch (Exception e) {
+            String error = e.toString();
+            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+            AppUtils.sendErrorLogs(this, error, getClass().getSimpleName(), "getTaskDetailsById", lineNo);
         }
+
     }
 
 
     private void setViewPagerView() {
 
         mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
-        mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
-        mAdapter.addFragment(ChemicalFragment.newInstance(model.getTaskId()), "Chemical Required");
-        mAdapter.addFragment(ReferralFragment.newInstance(model.getTaskId()), "Customer Referrals");
-        mAdapter.addFragment(PaymentFragment.newInstance(), "Payment");
-        mAdapter.addFragment(SignatureFragment.newInstance(model.getTaskId()), "Customer Signature");
+        if(sta.equals("Dispatched")){
+            mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
+        }else {
+            mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
+            mAdapter.addFragment(ChemicalFragment.newInstance(model.getTaskId()), "Chemical Required");
+            mAdapter.addFragment(ReferralFragment.newInstance(model.getTaskId()), "Customer Referrals");
+            mAdapter.addFragment(PaymentFragment.newInstance(model.getTaskId()), "Payment");
+            mAdapter.addFragment(SignatureFragment.newInstance(model.getTaskId()), "Customer Signature");
+        }
+
         mActivityTaskDetailsBinding.viewpager.setAdapter(mAdapter);
 
         mActivityTaskDetailsBinding.viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -240,6 +292,25 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
             selectFragment(menu.getItem(0));
 
+            MenuItem chemical = menu.findItem(R.id.nav_chemicals);
+            MenuItem referral = menu.findItem(R.id.nav_referral);
+            MenuItem payment = menu.findItem(R.id.nav_payment);
+            MenuItem signature = menu.findItem(R.id.nav_signature);
+
+            if(sta.equals("Dispatched")){
+                chemical.setEnabled(false);
+                referral.setEnabled(false);
+                payment.setEnabled(false);
+                signature.setEnabled(false);
+            }else {
+                chemical.setEnabled(true);
+                referral.setEnabled(true);
+                payment.setEnabled(true);
+                signature.setEnabled(true);
+            }
+
+
+
             // Set action to perform when any menu-item is selected.
             mActivityTaskDetailsBinding.bottomNavigation.setOnNavigationItemSelectedListener(
                     new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -284,13 +355,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_tasks, menu);
-
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-//        if (!isShowMenu) {
         if (Build.VERSION.SDK_INT > 11) {
             if (sta.equals("Completed") || sta.equals("Incomplete")) {
                 invalidateOptionsMenu();
@@ -300,8 +369,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 menu.findItem(R.id.menu_save).setVisible(true);
             }
         }
-//            isShowMenu = true;
-//        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -315,180 +383,238 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 break;
             case R.id.menu_save:
                 getSaveMenu();
-                return false;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void getSaveMenu() {
-        progress.show();
-        if (isGeneralChanged) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
-            Toasty.error(this, "Please change status.", Toast.LENGTH_SHORT, true).show();
-            progress.dismiss();
+        try {
+            progress.show();
+            isAttachment = SharedPreferencesUtility.getPrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT);
+            if (isGeneralChanged) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
+                Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
 
-        } else if (isChemicalChanged && Status.equals("Completed")) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(1);
-            Toasty.error(this, "Chemical entries are required.", Toast.LENGTH_SHORT, true).show();
-            progress.dismiss();
-        } else if (isPaymentChanged && Status.equals("Completed")) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
-            Toasty.error(this, "Payment fields are required.", Toast.LENGTH_SHORT, true).show();
-            progress.dismiss();
-        } else if (isSignatureChanged && Status.equals("Completed")) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
-            progress.dismiss();
-            Toasty.error(this, "Signature fields are required.", Toast.LENGTH_SHORT, true).show();
-        } else if (isCardRequired && Status.equals("Completed")) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
-            progress.dismiss();
-            Toasty.error(this, "Invalid OTP.", Toast.LENGTH_SHORT, true).show();
-        } else if (isOTPValidated && Status.equals("Completed")) {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
-            progress.dismiss();
-        } else {
-
-            if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
-                showRatingDialog();
+            } else if (isIncompleteReason && Status.equals("Incomplete")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
+                Toasty.error(this, "Please select incomplete reason", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isChemicalChanged && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(1);
+                Toasty.error(this, "Verify chemicals & check chemicals verified", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isAmountCollectedRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Amount collected field is required", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isAmountCollectedEquals && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Invalid amount", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isBankNameRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Please select bank name", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isChequeDateRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Please select cheque date", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isChequeNumberRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Cheque number is required", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isInvalidChequeNumber && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Invalid cheque number", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isChequeImageRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
+                Toasty.error(this, "Please upload cheque image", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isOTPValidated && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
+                progress.dismiss();
+                Toasty.error(this, "Invalid OTP", Toast.LENGTH_SHORT, true).show();
+            } else if (isSignatureChanged && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
+                progress.dismiss();
+                Toasty.error(this, "Signatory field is required", Toast.LENGTH_SHORT, true).show();
+            } else if (isSignatureValidated && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
+                progress.dismiss();
+                Toasty.error(this, "Customer signature is required", Toast.LENGTH_SHORT, true).show();
+            } else if (isCardRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
+                progress.dismiss();
+                Toasty.error(this, "Please upload your job card", Toast.LENGTH_SHORT, true).show();
             } else {
-                if (getmLocation() != null) {
-                    RealmResults<LoginResponse> LoginRealmModels =
-                            getRealm().where(LoginResponse.class).findAll();
-                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                        String UserId = LoginRealmModels.get(0).getUserID();
-                        UpdateTasksRequest request = new UpdateTasksRequest();
-                        request.setSchedulingStatus(Status);
-                        request.setPaymentMode(Payment_Mode);
-                        request.setAmountCollected(Amount_Collected);
-                        request.setAmountToCollect(Amount_To_Collected);
-                        request.setActualPropertySize(Actual_Size);
-                        request.setStandardPropertySize(Standard_Size);
-                        request.setTechnicianRating(Rate);
-                        request.setTechnicianOTP(Feedback_Code);
-                        request.setSignatory(signatory);
-                        request.setCustomerSign(Signature);
-                        request.setLatitude(String.valueOf(getmLocation().getLatitude()));
-                        request.setLongitude(String.valueOf(getmLocation().getLongitude()));
-                        request.setTaskId(model.getTaskId());
-                        request.setDuration(Duration);
-                        request.setResourceId(UserId);
-                        request.setChemicalList(ChemReqList);
-                        request.setIncompleteReason(incompleteReason);
 
-                        NetworkCallController controller = new NetworkCallController();
-                        controller.setListner(new NetworkResponseListner() {
-                            @Override
-                            public void onResponse(int requestCode, Object response) {
-                                UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
-                                if (updateResponse.getSuccess() == true) {
-                                    progress.dismiss();
-                                    Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
-                                    if (Status.equals("Completed")) {
-                                        getIncentiveDialog();
+                if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
+                    showRatingDialog();
+                } else {
+                    if (getmLocation() != null) {
+                        RealmResults<LoginResponse> LoginRealmModels =
+                                getRealm().where(LoginResponse.class).findAll();
+                        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                            String UserId = LoginRealmModels.get(0).getUserID();
+                            UpdateTasksRequest request = new UpdateTasksRequest();
+                            request.setSchedulingStatus(Status);
+                            request.setPaymentMode(Payment_Mode);
+                            request.setAmountCollected(Amount_Collected);
+                            request.setAmountToCollect(Amount_To_Collected);
+                            request.setActualPropertySize(Actual_Size);
+                            request.setStandardPropertySize(Standard_Size);
+                            request.setTechnicianRating(Rate);
+                            request.setTechnicianOTP(Feedback_Code);
+                            request.setSignatory(signatory);
+                            request.setBankName(bankName);
+                            request.setChequeDate(chequeDate);
+                            request.setChequeNo(chequeNumber);
+                            request.setCustomerSign(Signature);
+                            request.setLatitude(String.valueOf(getmLocation().getLatitude()));
+                            request.setLongitude(String.valueOf(getmLocation().getLongitude()));
+                            request.setTaskId(model.getTaskId());
+                            request.setDuration(Duration);
+                            request.setResourceId(UserId);
+                            request.setChemicalList(ChemReqList);
+                            request.setIncompleteReason(incompleteReason);
+                            request.setChequeImage(chequeImage);
+
+
+                            NetworkCallController controller = new NetworkCallController();
+                            controller.setListner(new NetworkResponseListner() {
+                                @Override
+                                public void onResponse(int requestCode, Object response) {
+                                    UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
+                                    if (updateResponse.getSuccess() == true) {
+                                        progress.dismiss();
+                                        Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
+                                        if (isIncentiveEnable && Status.equals("Completed")) {
+                                            showIncentiveDialog();
+                                        } else {
+                                            onBackPressed();
+                                        }
+
                                     } else {
-                                        onBackPressed();
-                                        finish();
+                                        progress.dismiss();
+                                        Toast.makeText(TaskDetailsActivity.this, "Failed.", Toast.LENGTH_LONG).show();
                                     }
-
-                                } else {
-                                    progress.dismiss();
-                                    Toast.makeText(TaskDetailsActivity.this, "Failed.", Toast.LENGTH_LONG).show();
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(int requestCode) {
+                                @Override
+                                public void onFailure(int requestCode) {
 
-                            }
-                        });
-                        controller.updateTasks(UPDATE_REQUEST, request);
+                                }
+                            });
+                            controller.updateTasks(UPDATE_REQUEST, request);
+                        }
                     }
                 }
-            }
 
+            }
+        } catch (Exception e) {
+            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+            AppUtils.sendErrorLogs(this, e.toString(), getClass().getSimpleName(), "getSaveMenu", lineNo);
         }
+
     }
 
-    private void getIncentiveDialog() {
-//        FragmentManager fm = getSupportFragmentManager();
-//        BlankFragment fragment = BlankFragment.newInstance(Incentive);
-//        fragment.show(fm, "fragment");
-//        fragment.setCancelable(false);
-        LayoutInflater li = LayoutInflater.from(this);
+    private void showIncentiveDialog() {
+        View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        Window window = dialog.getWindow();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        window.setBackgroundDrawableResource(R.color.darkblack);
+        dialog.setContentView(view);
+        dialog.show();
 
-        View promptsView = li.inflate(R.layout.dialog_incentive, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-
-        alertDialogBuilder.setView(promptsView);
-        alertDialogBuilder.setCancelable(false);
-
-        final AlertDialog alertDialog = alertDialogBuilder.create();
         final AppCompatTextView txtReward =
-                (AppCompatTextView) promptsView.findViewById(R.id.txtReward);
+                (AppCompatTextView) view.findViewById(R.id.txtReward);
         final AppCompatTextView txtIncentive =
-                (AppCompatTextView) promptsView.findViewById(R.id.txtIncentive);
+                (AppCompatTextView) view.findViewById(R.id.txtIncentive);
         final AppCompatTextView txtLose =
-                (AppCompatTextView) promptsView.findViewById(R.id.txtLose);
-        final ScratchCard scratchCard =
-                (ScratchCard) promptsView.findViewById(R.id.scratchCard);
+                (AppCompatTextView) view.findViewById(R.id.txtLose);
+//        final ScratchView scratchCard =
+//                (ScratchView) view.findViewById(R.id.scratch_view);
         final AppCompatImageView imgAward =
-                (AppCompatImageView) promptsView.findViewById(R.id.imgAward);
+                (AppCompatImageView) view.findViewById(R.id.imgAward);
         final AppCompatImageView imgNoAward =
-                (AppCompatImageView) promptsView.findViewById(R.id.imgNoAward);
-        final AppCompatButton btnOk =
-                (AppCompatButton) promptsView.findViewById(R.id.btnOk);
-//        final AppCompatImageView imgClose =
-//                (AppCompatImageView) promptsView.findViewById(R.id.imgClose);
+                (AppCompatImageView) view.findViewById(R.id.imgNoAward);
 
-        if (Incentive == 0) {
-            imgAward.setVisibility(View.INVISIBLE);
-            imgNoAward.setVisibility(View.VISIBLE);
-            txtLose.setVisibility(View.VISIBLE);
-            txtIncentive.setVisibility(View.GONE);
-            txtReward.setVisibility(View.GONE);
-        } else {
-            imgAward.setVisibility(View.VISIBLE);
-            imgNoAward.setVisibility(View.INVISIBLE);
-            txtLose.setVisibility(View.GONE);
-            txtIncentive.setVisibility(View.VISIBLE);
-            txtReward.setVisibility(View.VISIBLE);
-            txtIncentive.setText(Incentive + " Points");
+        final AppCompatImageView imgCancel =
+                (AppCompatImageView) view.findViewById(R.id.imgCancel);
+        final ScratchRelativeLayout scratch =
+                (ScratchRelativeLayout) view.findViewById(R.id.scratch);
+        final AppCompatTextView txtMsg =
+                (AppCompatTextView) view.findViewById(R.id.winningMsg);
+        final AppCompatTextView txtEarned =
+                (AppCompatTextView) view.findViewById(R.id.txtEarned);
+        final AppCompatTextView txtHicare =
+                (AppCompatTextView) view.findViewById(R.id.txtHicare);
+
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+            imgCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                    AppUtils.getDataClean();
+                    dialog.dismiss();
+                }
+            });
+
+            String[] array = getApplicationContext().getResources().getStringArray(R.array.randomApplause);
+            String randomStr = array[new Random().nextInt(array.length)];
+            if (Incentive == 0) {
+                imgAward.setVisibility(View.INVISIBLE);
+                imgNoAward.setVisibility(View.VISIBLE);
+                txtLose.setVisibility(View.VISIBLE);
+                txtIncentive.setVisibility(View.GONE);
+                txtReward.setVisibility(View.GONE);
+                txtMsg.setText("Oops!");
+
+            } else {
+                imgAward.setVisibility(View.VISIBLE);
+                imgNoAward.setVisibility(View.INVISIBLE);
+                txtLose.setVisibility(View.GONE);
+                txtIncentive.setVisibility(View.VISIBLE);
+                txtReward.setVisibility(View.VISIBLE);
+                txtIncentive.setText(Incentive + " Points");
+                txtMsg.setText(randomStr);
+
+            }
+
+            int[] images = {R.drawable.gift_three,R.drawable.ift1,R.drawable.ift2};
+            Random rand = new Random();
+            scratch.setWatermark(images[rand.nextInt(images.length)]);
+
+            scratch.setEraseStatusListener(new ScratchView.EraseStatusListener() {
+                @Override
+                public void onProgress(int percent) {
+                    if (percent > 30) {
+                        imgCancel.setVisibility(View.VISIBLE);
+                        txtMsg.setVisibility(View.VISIBLE);
+                        if (Incentive > 0) {
+                            txtEarned.setVisibility(View.VISIBLE);
+                            txtHicare.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCompleted(View view) {
+
+                }
+            });
 
         }
-
-
-        scratchCard.setOnScratchListener(new ScratchCard.OnScratchListener() {
-            @Override
-            public void onScratch(ScratchCard scratchCard, float visiblePercent) {
-                if (visiblePercent > 0.3) {
-                    btnOk.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-                finish();
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Window window = alertDialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.CENTER;
-
-//        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-//        lp.dimAmount = 0.0f;
-//        alertDialog.getWindow().setAttributes(lp);
-//        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-        window.setAttributes(wlp);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
     }
+
 
     @Override
     public void locationFetched(Location mLocation, Location oldLocation, String time,
@@ -505,31 +631,48 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
     @Override
     public void onBackPressed() {
-        if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() == 0) {
-            AppUtils.getDataClean();
-            finish();
-            super.onBackPressed();
-        } else {
-            mActivityTaskDetailsBinding.viewpager.setCurrentItem(0, true);
-            AppUtils.getDataClean();
-            finish();
+        try {
+            if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() == 0) {
+                AppUtils.getDataClean();
+                passData();
+                finish();
+                super.onBackPressed();
+            } else {
+                passData();
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0, true);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() > 0) {
-                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0, true);
-            } else {
-                AppUtils.getDataClean();
-                finish();
+            try {
+                if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() > 0) {
+                    mActivityTaskDetailsBinding.viewpager.setCurrentItem(0, true);
+                } else {
+                    passData();
+                    AppUtils.getDataClean();
+                    finish();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             return true;
 
         } else {
             return super.onKeyDown(keyCode, event);
         }
+    }
+
+    private void passData() {
+        SharedPreferencesUtility.savePrefBoolean(TaskDetailsActivity.this, SharedPreferencesUtility.PREF_REFRESH, true);
     }
 
 
@@ -614,6 +757,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     @Override
+    public void isSignatureValidated(Boolean b) {
+        isSignatureValidated = b;
+    }
+
+    @Override
     public void isOTPValidated(Boolean b) {
         isOTPValidated = b;
     }
@@ -633,4 +781,67 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         isCardRequired = b;
     }
 
+    @Override
+    public void isIncompleteReason(Boolean b) {
+        isIncompleteReason = b;
+    }
+
+    @Override
+    public void bankName(String s) {
+        bankName = s;
+    }
+
+    @Override
+    public void chequeNumber(String s) {
+        chequeNumber = s;
+    }
+
+    @Override
+    public void chequeDate(String s) {
+        chequeDate = s;
+    }
+
+    @Override
+    public void chequeImage(String s) {
+        chequeImage = s;
+    }
+
+    @Override
+    public void isAmountCollectedRequired(Boolean b) {
+        isAmountCollectedRequired = b;
+    }
+
+    @Override
+    public void isBankNameRequired(Boolean b) {
+        isBankNameRequired = b;
+    }
+
+    @Override
+    public void isChequeDateRequired(Boolean b) {
+        isChequeDateRequired = b;
+    }
+
+    @Override
+    public void isChequeNumberRequired(Boolean b) {
+        isChequeNumberRequired = b;
+    }
+
+    @Override
+    public void isInvalidChequeNumber(Boolean b) {
+        isInvalidChequeNumber = b;
+    }
+
+    @Override
+    public void isChequeImageRequired(Boolean b) {
+        isChequeImageRequired = b;
+    }
+
+    @Override
+    public void isACEquals(Boolean b) {
+        isAmountCollectedEquals = b;
+    }
+
+    public void onSaveClick(MenuItem item) {
+        getSaveMenu();
+    }
 }

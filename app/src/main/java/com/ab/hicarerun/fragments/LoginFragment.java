@@ -33,6 +33,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.LoginActivity;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.databinding.FragmentLoginBinding;
 import com.ab.hicarerun.handler.UserLoginClickHandler;
@@ -41,6 +42,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
+import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
@@ -58,11 +60,11 @@ import retrofit2.Response;
  */
 public class LoginFragment extends BaseFragment implements UserLoginClickHandler {
     FragmentLoginBinding mFragmentLoginBinding;
-    private UserLoginTask mAuthTask = null;
     private static final int LOGIN_REQUEST = 1000;
     private static final int REQUEST_READ_PHONE_STATE = 1;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     private Boolean isGetInside = false;
+    private UserLoginTask mAuthTask = null;
     private String profilePic = "";
 
     public LoginFragment() {
@@ -107,6 +109,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -228,11 +231,10 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
             mAuthTask = null;
 
             if (success) {
-                if(profilePic.trim().length() == 0){
-                    replaceFragment(FaceRecognizationFragment.newInstance(false,model.getUsername()),"LoginFragment-FaceRecognizationFragment" );
-
-                }else {
-                   AppUtils.getHandShakeCall(model.getUsername(),getActivity());
+                if (profilePic.trim().length() == 0) {
+                    replaceFragment(FaceRecognizationFragment.newInstance(false, model.getUsername()), "LoginFragment-FaceRecognizationFragment");
+                } else {
+                    AppUtils.getHandShakeCall(model.getUsername(), getActivity());
                 }
             } else {
                 mFragmentLoginBinding.edtpassword.setError("Invalid Password!");

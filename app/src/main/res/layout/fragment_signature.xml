@@ -96,7 +96,7 @@
                             android:gravity="center"
                             android:text="Property Size Not Same?"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14dp" />
+                            android:textSize="14sp" />
 
                         <net.igenius.customcheckbox.CustomCheckBox
                             android:id="@+id/check_Property"
@@ -124,7 +124,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="Actual Property size"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/actual_size"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -146,7 +146,7 @@
                         android:text=""
                         android:inputType="number"
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -165,9 +165,10 @@
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="OTP"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14dp"
+                        android:text="@string/otp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -176,7 +177,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/feedback"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -188,7 +189,7 @@
                         android:layout_marginRight="10dp"
                         android:inputType="number"
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="15sp"
                         android:background="@drawable/edit_border"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
@@ -209,18 +210,20 @@
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="Amount Collected"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14dp"
+                        android:text="@string/amount_to_collect"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/amount"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -232,7 +235,7 @@
                         android:layout_marginRight="10dp"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -249,9 +252,10 @@
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="Signatory"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14dp"
+                        android:text="@string/signatory"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -260,7 +264,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/signatory"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -272,7 +276,7 @@
                         android:layout_marginRight="10dp"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="15sp"
                         android:background="@drawable/edit_border"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
@@ -296,8 +300,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="15dp"
-                        android:text="Signature"
-                        android:textColor="@color/colorPrimary"
+                        android:text="@string/signature"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:textColor="@color/colorPrimaryDark"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

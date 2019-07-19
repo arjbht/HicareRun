@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -40,6 +41,7 @@ import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.utils.AppUtils;
 
 import net.igenius.customcheckbox.CustomCheckBox;
 
@@ -84,6 +86,13 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
         ChemicalFragment fragment = new ChemicalFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppUtils.statusCheck(getActivity());
     }
 
     @Override
@@ -154,16 +163,21 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                     e.printStackTrace();
                 }
 
-
             }
         });
 
-        mFragmentChemicalBinding.checkChemVerified.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
+
+        mFragmentChemicalBinding.checkChemVerified.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                isChemicalChecked = isChecked;
-                for (int i = 0; i < mAdapter.getItemCount(); i++)
-                    getValidation(i);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+                    isChemicalChecked = isChecked;
+                    for (int i = 0; i < mAdapter.getItemCount(); i++)
+                        getValidation(i);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -172,21 +186,24 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     }
 
     private void setChemicals() {
+        try {
+            mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
 
-        mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
-
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-            isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-            ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+                ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
 
 
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(this);
-            controller.getChemicals(CHEMICAL_REQ, taskId);
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(this);
+                controller.getChemicals(CHEMICAL_REQ, taskId);
 
-            callAfterResponse();
+                callAfterResponse();
 
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -239,17 +256,23 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     }
 
     public void callAfterResponse() {
-        if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
-            mFragmentChemicalBinding.checkChemVerified.setChecked(true);
-            mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
-        } else {
-            mFragmentChemicalBinding.relChemicals.setVisibility(View.VISIBLE);
-            mFragmentChemicalBinding.checkChemVerified.setChecked(false);
-            mFragmentChemicalBinding.checkChemVerified.setEnabled(true);
+        try {
+            if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
+                mFragmentChemicalBinding.checkChemVerified.setChecked(true);
+                mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
+            } else if( ActualStatus.equals("Dispatched")){
+                mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
+            } else {
+                mFragmentChemicalBinding.relChemicals.setVisibility(View.VISIBLE);
+                mFragmentChemicalBinding.checkChemVerified.setChecked(false);
+                mFragmentChemicalBinding.checkChemVerified.setEnabled(true);
+            }
 
-        }
-        for (int i = 0; i < mAdapter.getItemCount(); i++) {
-            getValidation(i);
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                getValidation(i);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

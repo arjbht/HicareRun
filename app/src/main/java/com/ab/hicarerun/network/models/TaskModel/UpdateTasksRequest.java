@@ -45,6 +45,9 @@ public class UpdateTasksRequest {
     @SerializedName("ChequeNo")
     @Expose
     private String ChequeNo;
+    @SerializedName("ChequeImage")
+    @Expose
+    private String ChequeImage;
     @SerializedName("ChequeDate")
     @Expose
     private String ChequeDate;
@@ -102,6 +105,7 @@ public class UpdateTasksRequest {
     @SerializedName("Comment")
     @Expose
     private String Comment;
+
     @SerializedName("ChemicalList")
     @Expose
     private List<TaskChemicalList> ChemicalList = null;
@@ -409,5 +413,13 @@ public class UpdateTasksRequest {
 
     public void setTechnicianRating(Integer technicianRating) {
         TechnicianRating = technicianRating;
+    }
+
+    public String getChequeImage() {
+        return ChequeImage;
+    }
+
+    public void setChequeImage(String chequeImage) {
+        ChequeImage = chequeImage;
     }
 }

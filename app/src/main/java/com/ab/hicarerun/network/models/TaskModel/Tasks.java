@@ -18,6 +18,13 @@ public class Tasks implements Parcelable {
     @Expose
     private String ServiceType;
 
+    @SerializedName("Tag")
+    @Expose
+    private String Tag;
+
+    @SerializedName("SequenceNumber")
+    @Expose
+    private int SequenceNumber;
 
     @SerializedName("SchedulingStatus")
     @Expose
@@ -168,6 +175,8 @@ public class Tasks implements Parcelable {
         CompletedLong = "NA";
         CustomerLatitude = "NA";
         CustomerLongitude = "NA";
+        Tag = "NA";
+        SequenceNumber = 0;
     }
 
 
@@ -175,6 +184,8 @@ public class Tasks implements Parcelable {
         AccountName = in.readString();
         ServicePlan = in.readString();
         ServiceType = in.readString();
+        Tag = in.readString();
+        SequenceNumber = in.readInt();
         Status = in.readString();
         TaskId = in.readString();
         WingFlatOrUnitNumber = in.readString();
@@ -474,6 +485,22 @@ public class Tasks implements Parcelable {
         CustomerLongitude = customerLongitude;
     }
 
+    public String getTag() {
+        return Tag;
+    }
+
+    public void setTag(String tag) {
+        Tag = tag;
+    }
+
+    public int getSequenceNumber() {
+        return SequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        SequenceNumber = sequenceNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -484,6 +511,8 @@ public class Tasks implements Parcelable {
         dest.writeString(AccountName);
         dest.writeString(ServicePlan);
         dest.writeString(ServiceType);
+        dest.writeString(Tag);
+        dest.writeInt(SequenceNumber);
         dest.writeString(Status);
         dest.writeString(TaskId);
         dest.writeString(WingFlatOrUnitNumber);

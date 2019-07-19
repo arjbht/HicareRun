@@ -9,6 +9,8 @@
     <color name="lightorange">#ffff8800</color>
     <color name="maroon">#8B0000</color>
     <color name="bggrey">#FFDDDDDD</color>
+    <color name="link">#0766da</color>
+    <color name="red">#ff0000</color>
 
     <color name="colorAccentDrawerPrimaryDark">#24272c</color>
     <color name="colorAccentDrawerPrimary">#27313d</color>
@@ -16,6 +18,7 @@
     <color name="colorTextDrawerPrimary">#fff</color>
     <color name="colorTextDrawerSecondary">#9199a6</color>
     <color name="black">#000000</color>
+    <color name="darkblack">#cc000000</color>
     <color name="lightblack">#191919</color>
     <color name="white">#ffffff</color>
     <color name="icons">#4AAF4F</color>
@@ -28,6 +31,7 @@
     <color name="textColorSecondary">#757575</color>
     <color name="gold">#FFD700</color>
     <color name="transparent_black">#66000000</color>
+    <color name="transparent_blacke">#b3000000</color>
     <color name="cv_capture_bg">#55000000</color>
 
 

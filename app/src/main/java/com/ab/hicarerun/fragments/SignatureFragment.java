@@ -61,6 +61,7 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;
@@ -103,7 +104,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     static Boolean isCheck = false;
     private String path = "";
     private boolean jobCard = false;
-    private int listSize = 0;
+    private boolean isAttachment = false;
     private OnSaveEventHandler mCallback;
     private DrawingView dv;
     private Paint mPaint;
@@ -123,7 +124,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     public static SignatureFragment newInstance(String taskId) {
         Bundle args = new Bundle();
         args.putString(ARG_TASK, taskId);
-
         SignatureFragment fragment = new SignatureFragment();
         fragment.setArguments(args);
 
@@ -150,14 +150,11 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     }
 
-
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("actual_property", mFragmentSignatureBinding.txtActualSize.getText().toString());
-        outState.putString("feedback", mFragmentSignatureBinding.txtFeedback.getText().toString());
-        outState.putString("signatory", mFragmentSignatureBinding.txtSignatory.getText().toString());
-        outState.putString("signature", signature);
-        super.onSaveInstanceState(outState);
+    public void onResume() {
+        super.onResume();
+        getValidate();
+        AppUtils.statusCheck(getActivity());
     }
 
     @Override
@@ -216,6 +213,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             }
         });
 
+
         mFragmentSignatureBinding.txtSignatory.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -240,15 +238,22 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             status = mGeneralRealmData.get(0).getSchedulingStatus();
-            if (status.equals("Completed")) {
+            if (status.equals("Completed") || status.equals("Incomplete")) {
                 mFragmentSignatureBinding.txtSignatory.setEnabled(false);
+                mFragmentSignatureBinding.txtSignatory.setText(mGeneralRealmData.get(0).getSignatory());
+                mFragmentSignatureBinding.txtRecords.setText(mGeneralRealmData.get(0).getNumberOfBhk());
+                mFragmentSignatureBinding.txtFeedback.setText(mGeneralRealmData.get(0).getTechnicianOTP());
                 mFragmentSignatureBinding.txtHint.setVisibility(GONE);
+                mFragmentSignatureBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureBinding.btnSendlink.setVisibility(GONE);
                 mFragmentSignatureBinding.btnUpload.setVisibility(GONE);
-            } else if (status.equals("Incomplete")) {
+
+            } else if (status.equals("Dispatched")) {
+                mFragmentSignatureBinding.txtSignatory.setBackgroundResource(R.drawable.disable_edit_borders);
+                mFragmentSignatureBinding.imgSign.setVisibility(GONE);
                 mFragmentSignatureBinding.txtSignatory.setEnabled(false);
-                mFragmentSignatureBinding.imgSign.setEnabled(false);
                 mFragmentSignatureBinding.txtHint.setVisibility(GONE);
+                mFragmentSignatureBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureBinding.btnSendlink.setVisibility(GONE);
                 mFragmentSignatureBinding.btnUpload.setVisibility(GONE);
             } else {
@@ -276,9 +281,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 e.printStackTrace();
             }
 
-            mFragmentSignatureBinding.txtRecords.setText(mGeneralRealmData.get(0).getNumberOfBhk());
-            mFragmentSignatureBinding.txtFeedback.setText(mGeneralRealmData.get(0).getTechnicianOTP());
-            mFragmentSignatureBinding.txtSignatory.setText(mGeneralRealmData.get(0).getSignatory());
             try {
                 mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
             } catch (Exception e) {
@@ -298,33 +300,25 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 mFragmentSignatureBinding.btnUpload.setVisibility(View.GONE);
             }
             getValidate();
-            if (!mActualProperty.equals("")) {
-                mFragmentSignatureBinding.txtActualSize.setText(mActualProperty);
-            }
-            if (!mSignatory.equals("")) {
-                mFragmentSignatureBinding.txtSignatory.setText(mSignatory);
-            }
-            if (!mSignature.equals("")) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(mSignature);
-                mFragmentSignatureBinding.txtHint.setVisibility(GONE);
-                mFragmentSignatureBinding.imgSign.setImageBitmap(myBitmap);
-            }
-
         }
-        if (mFragmentSignatureBinding.imgSign.getDrawable() != null) {
-            mFragmentSignatureBinding.txtSignatory.setEnabled(false);
-        }
-
     }
 
 
     @Override
     public void onSignatureClicked(View view) {
 
-        if (mFragmentSignatureBinding.imgSign.getDrawable() != null) {
-
+        if (status.equals("Completed") || status.equals("Incomplete")) {
+            Log.v("state", status);
         } else {
+            getSignatureDialog();
+        }
+    }
+
+    private void getSignatureDialog() {
+
+        if (mFragmentSignatureBinding.imgSign.getDrawable() == null) {
             LayoutInflater li = LayoutInflater.from(getActivity());
+
 
             View promptsView = li.inflate(R.layout.signature_dialog, null);
 
@@ -397,6 +391,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     mPaint.setStrokeWidth(8);
                     lnr_screen.addView(dv);
                     txt_hint.setVisibility(View.VISIBLE);
+                    getValidate();
                 }
             });
 
@@ -404,13 +399,18 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 @Override
                 public void onClick(View v) {
                     alertDialog.dismiss();
+                    getValidate();
+
                 }
             });
 
+            alertDialog.setCancelable(false);
             alertDialog.setIcon(R.mipmap.logo);
             // show it
             alertDialog.show();
         }
+
+
     }
 
     @Override
@@ -445,10 +445,12 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             btn_send.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
 
                     FeedbackRequest request = new FeedbackRequest();
                     request.setName(name);
                     request.setTask_id(taskId);
+                    request.setFeedback_code(customer_otp);
                     request.setOrder_number(Order_Number);
                     request.setService_name(Service_Name);
                     NetworkCallController controller = new NetworkCallController();
@@ -472,7 +474,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 }
             });
 
-
             btn_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -480,7 +481,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 }
             });
             alertDialog.setIcon(R.mipmap.logo);
-
             alertDialog.show();
 
         } else {
@@ -493,18 +493,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     public void onUploadAttachmentClicked(View view) {
         Intent intent = new Intent(getActivity(), AttachmentActivity.class);
         intent.putExtra(AttachmentActivity.ARGS_TASKS, taskId);
-        startActivityForResult(intent, 1);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Bundle bundle = data.getExtras();
-                listSize = bundle.getInt("listSize");
-                jobCard = bundle.getBoolean("isJobCard");
-            }
-        }
+        startActivity(intent);
     }
 
 
@@ -521,13 +510,9 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
                 signature = encodedImage;
                 mCallback.signature(encodedImage);
-//                mCallback.actualPropertySize(mFragmentSignatureBinding.txtActualSize.getText().toString());
-//                mCallback.standardPropertySize(mFragmentSignatureBinding.txtRecords.getText().toString());
-//                mCallback.feedbackCode(mFragmentSignatureBinding.txtFeedback.getText().toString());
-                getValidate();
                 mCallback.signatory(mFragmentSignatureBinding.txtSignatory.getText().toString());
                 mFragmentSignatureBinding.imgSign.setImageBitmap(myBitmap);
-
+                getValidate();
 
             }
         }
@@ -637,6 +622,8 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     }
 
     public void getValidate() {
+
+
         if (isFeedBack) {
             mFragmentSignatureBinding.lnrOtp.setVisibility(View.VISIBLE);
             String otp = mFragmentSignatureBinding.txtFeedback.getText().toString().trim();
@@ -660,23 +647,52 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 } else {
                     mCallback.isOTPValidated(true);
                 }
+
+
+                if (mFragmentSignatureBinding.txtSignatory.getText().toString().length() == 0) {
+                    mCallback.isSignatureChanged(true);
+                } else {
+                    mCallback.isSignatureChanged(false);
+                }
+                if (mFragmentSignatureBinding.imgSign.getDrawable() == null) {
+                    mCallback.isSignatureValidated(true);
+                } else {
+                    mCallback.isSignatureValidated(false);
+                }
+
+
             }
         } else {
             mFragmentSignatureBinding.txtFeedback.setEnabled(false);
             mFragmentSignatureBinding.lnrOtp.setVisibility(GONE);
             mFragmentSignatureBinding.btnSendlink.setVisibility(View.GONE);
-            mCallback.isSignatureChanged(false);
+            if (mFragmentSignatureBinding.txtSignatory.getText().toString().length() == 0) {
+                mCallback.isSignatureChanged(true);
+            } else {
+                mCallback.isSignatureChanged(false);
+            }
+            if (mFragmentSignatureBinding.imgSign.getDrawable() == null) {
+                mCallback.isSignatureValidated(true);
+            } else {
+                mCallback.isSignatureValidated(false);
+            }
         }
 
+
         if (isJobcardEnable) {
-            if (listSize >= 0) {
+            isAttachment = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT);
+            if (isAttachment) {
                 mCallback.isAttachmentError(false);
+                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT, false);
             } else {
                 mCallback.isAttachmentError(true);
             }
         } else {
             mCallback.isAttachmentError(false);
+            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT, false);
         }
+
+
     }
 
 

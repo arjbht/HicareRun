@@ -17,8 +17,9 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripplle_effect">
-
+            android:background="@drawable/ripplle_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <android.support.constraint.ConstraintLayout
@@ -29,7 +30,9 @@
                 <LinearLayout
                     android:id="@+id/lnr_time"
                     android:layout_width="170dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/txt_time"
@@ -48,42 +51,25 @@
 
                 </LinearLayout>
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/img_tracklocation"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                <LinearLayout
+                    android:id="@+id/lnr_Map"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_mapicon"
-                    android:background="@drawable/ripplle_effect"
+                    android:gravity="left"
                     app:layout_constraintLeft_toRightOf="@id/lnr_time"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
 
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/img_tracklocation"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/ripplle_effect"
+                        android:src="@drawable/ic_mapicon" />
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/txt_status"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginRight="10dp"-->
-                        <!--android:lineSpacingMultiplier="1.2"-->
-                        <!--android:paddingTop="10dp"-->
-                        <!--android:paddingBottom="10dp"-->
-                        <!--android:text="COMPLETED"-->
-                        <!--android:textColor="@color/colorPrimary"-->
-                        <!--android:textSize="16dp"-->
-                        <!--android:textStyle="bold"-->
-                        <!--app:layout_constraintRight_toRightOf="parent"-->
-                        <!--tools:ignore="MissingConstraints" />-->
-
-                <!--<View-->
-                    <!--android:id="@+id/view"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="5dp"-->
-                    <!--android:background="@drawable/divider_container"-->
-                    <!--android:layerType="software"-->
-                    <!--app:layout_constraintTop_toBottomOf="@id/lnr_time" />-->
-
+                </LinearLayout>
 
 
                 <jp.shts.android.library.TriangleLabelView
@@ -92,20 +78,19 @@
                     android:layout_height="match_parent"
                     app:backgroundColor="@color/colorPrimary"
                     app:corner="rightTop"
-                    app:layout_constraintRight_toRightOf="parent"
                     app:labelBottomPadding="9dp"
                     app:labelCenterPadding="21dp"
                     app:labelTopPadding="10dp"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:primaryText="InComplete"
-                    app:primaryTextSize="12sp"
-                    />
+                    app:primaryTextSize="12sp" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img_warning"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_error"
+                    android:src="@drawable/ic_running"
                     android:visibility="gone"
                     app:layout_constraintRight_toLeftOf="@id/txt_status"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -135,7 +120,7 @@
                     app:layout_constraintTop_toBottomOf="@id/txt_name">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Service Plan"
                         android:textColor="@color/colorPrimary"
@@ -159,7 +144,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/lnr_type"
+                    android:id="@+id/lnr_tag"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -168,7 +153,71 @@
                     app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Tag"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/txt_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="Deprected"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_sequence"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lnr_tag">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Sequence No."
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/txt_sequence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="Deprected"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnr_type"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lnr_sequence">
+
+                    <TextView
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Type"
                         android:textColor="@color/colorPrimary"
@@ -200,7 +249,7 @@
                     app:layout_constraintTop_toBottomOf="@id/lnr_type">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Address"
                         android:textColor="@color/colorPrimary"
@@ -232,7 +281,7 @@
                     app:layout_constraintTop_toBottomOf="@id/lnr_address">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Landmark"
                         android:textColor="@color/colorPrimary"
@@ -264,7 +313,7 @@
                     app:layout_constraintTop_toBottomOf="@id/lnr_landmark">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Postal Code"
                         android:textColor="@color/colorPrimary"
@@ -296,7 +345,7 @@
                     app:layout_constraintTop_toBottomOf="@id/lnr_postalcode">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Order No."
                         android:textColor="@color/colorPrimary"
@@ -323,14 +372,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:orientation="horizontal"
                     android:layout_marginTop="2dp"
+                    android:orientation="horizontal"
                     android:paddingBottom="5dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lnr_order">
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Amount To Collect"
                         android:textColor="@color/colorPrimary"
@@ -353,16 +402,28 @@
                     <LinearLayout
                         android:id="@+id/lnr_timer"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/txt_timer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text=""
-                            android:textSize="16dp"
-                            android:gravity="right"
                             android:layout_gravity="right"
-                            />
+                            android:text="Running late!"
+                            android:gravity="right"
+                            android:textColor="@color/red"
+                            android:textSize="16dp" />
+
+                        <!--<Chronometer-->
+                            <!--android:id="@+id/txt_chromometer"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:gravity="end"-->
+                            <!--android:textColor="@color/red"/>-->
+
 
                     </LinearLayout>
 

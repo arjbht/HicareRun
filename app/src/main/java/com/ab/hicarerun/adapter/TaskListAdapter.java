@@ -5,34 +5,55 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.format.Time;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Chronometer;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.TaskListAdapterBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.MyCountDownTimer;
 import com.ab.hicarerun.viewmodel.TaskViewModel;
 import com.orhanobut.logger.Logger;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import io.realm.RealmResults;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -47,6 +68,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     private Activity activity = null;
     private List<TaskViewModel> items = null;
     String currentdate;
+    long milli = 0;
+    private Handler customHandler = new Handler();
+    private long startTime = 0L;
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
+    Runnable updateTimerThread;
+
+    private int time = 20;
+    private Timer timer;
 
     public TaskListAdapter(Activity context) {
         if (items == null) {
@@ -67,18 +98,38 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
         holder.mTaskListAdapterBinding.txtStatus.setPrimaryText(items.get(position).getStatus());
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
+        holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
         if (items.get(position).getStatus().equals("Completed")) {
+//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
         } else if (items.get(position).getStatus().equals("Dispatched")) {
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF8C00"));
+//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF8C00"));
+            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FFA500"));
         } else if (items.get(position).getStatus().equals("On-Site")) {
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#ffc40d"));
+//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#ffc40d"));
+            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#e5e112"));
         } else if (items.get(position).getStatus().equals("Incomplete")) {
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
+        }
+
+        if(items.get(0).getTag()!=null){
+            holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
+            holder.mTaskListAdapterBinding.txtTag.setText(items.get(0).getTag());
+        }else {
+            holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
+        }
+
+        if( items.get(0).getSequenceNumber() != 0){
+            holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
+            holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(0).getSequenceNumber()));
+        }else {
+            holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
         }
 
         holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
@@ -87,10 +138,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             street = items.get(position).getStreet();
         }
 
-
-        holder.mTaskListAdapterBinding.txtAddress.setText(items.get(position).getBuildingName() + ", "
-                + items.get(position).getLocality() + ", "
-                + street);
+        if (items.get(position).getBuildingName().trim().length() != 0) {
+            holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
+            holder.mTaskListAdapterBinding.txtAddress.setText(items.get(position).getBuildingName() + ", "
+                    + items.get(position).getLocality() + ", "
+                    + street);
+        } else {
+            holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.GONE);
+        }
 
         if (items.get(position).getLandmark() != null && !items.get(position).getLandmark().equals("")) {
             holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.VISIBLE);
@@ -129,42 +184,76 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 onCallListItemClickHandler.onTelePhoneClicked(position);
             }
         });
-        holder.mTaskListAdapterBinding.imgTracklocation.setOnClickListener(new View.OnClickListener() {
+        holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onCallListItemClickHandler.onTrackLocationIconClicked(position);
             }
         });
 
-        if (AppUtils.CompareTime(items.get(position).getTaskAssignmentStartTime()).equals("0")) {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-            Animation animation = new AlphaAnimation(1, 0); //to change visibility from visible to invisible
-            animation.setDuration(500); //1 second duration for each animation cycle
-            animation.setInterpolator(new LinearInterpolator());
-            animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
-            animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
-            holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation); //to start animation
-        } else {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-        }
-//        startcountdownTimerDemo(holder, position);
+
+        final Handler ha = new Handler();
+        ha.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                //call function
+
+                if (items.get(position).getStatus().equals("Dispatched")) {
+                    startCountUpTimer(holder, position);
+                }else {
+                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                }
+                ha.postDelayed(this, 100000);
+            }
+        }, 10000);
+
+
+        holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+
+                    String titleText = "Running Late...";
+
+                    // Initialize a new foreground color span instance
+                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLACK);
+                    // Initialize a new spannable string builder instance
+                    SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
+                    // Apply the text color span
+                    ssBuilder.setSpan(
+                            foregroundColorSpan,
+                            0,
+                            titleText.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
+
+                    startCountUpTimer(holder, position);
+                    String time = AppUtils.millisTOHr(milli);
+                    getErrorDialog(ssBuilder, "You're running late by " + time + "." );
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    public void startcountdownTimerDemo(final ViewHolder holder, int position) {
+
+    private void startCountUpTimer(final ViewHolder holder, int position) {
         String sdate = items.get(position).getTaskAssignmentStartDate();
-        String[] stdate = sdate.split(" ");
         String edate = items.get(position).getTaskAssignmentEndDate();
-        String[] edaet = edate.split(" ");
+//        yyyy-MM-dd HH:mm:ss
 
-
-        String[] split_start = sdate.split(" ");
+        String[] split_start = sdate.split("T");
         String start_date = (split_start[0]);
         String start_time = (split_start[1]);
+        final String sDate = start_date + " " + start_time;
 
-
-        String[] split_end = edate.split(" ");
+        String[] split_end = edate.split("T");
         String end_date = (split_end[0]);
         String end_time = (split_end[1]);
+        String eDate = end_date + " " + end_time;
 
 
         String[] split_sDate = start_date.split("-");
@@ -190,7 +279,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         String sec_end = split_eTime[2];
 
 
-        Time conferenceTime = new Time(Time.getCurrentTimezone());
+        final Time conferenceTime = new Time(Time.getCurrentTimezone());
 
         final int hour = Integer.parseInt(hr_start);
         final int minute = Integer.parseInt(mn_start);
@@ -198,69 +287,147 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final int monthDay = Integer.parseInt(day_start);
         final int month = Integer.parseInt(month_start) - 1;
         final int year = Integer.parseInt(year_start);
+        String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
 
+//        if (isStartDate.equals("afterdate")) {
+//            conferenceTime.set(second, minute, hour, monthDay, month, year);
+//            holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.VISIBLE);
+//            holder.mTaskListAdapterBinding.txtChronometer.start();
+//            holder.mTaskListAdapterBinding.txtChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+//                @Override
+//                public void onChronometerTick(Chronometer chronometer) {
+//                    String after15Mins = AppUtils.compareDates(currentdate, sDate);
+//                    if (after15Mins.equals("after15date")) {
+//                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+//                    } else {
+//                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.VISIBLE);
+//                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+//                    }
+////                    if (chronometer.getText().toString().equalsIgnoreCase("15:00")) {
+////                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+////                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+////                    }
+//                }
+//            });
+//
+//        } else if(isStartDate.equals("afterdate")){
+//            holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//        }
 
-        final int hourEnd = Integer.parseInt(hr_end);
-        final int minuteEnd = Integer.parseInt(mn_end);
-        final int secondEnd = Integer.parseInt(sec_end);
-        final int monthDayEnd = Integer.parseInt(day_end);
-        final int monthEnd = Integer.parseInt(month_end) - 1;
-        final int yearEnd = Integer.parseInt(year_end);
+        if (items.get(position).getStatus().equals("Dispatched")) {
 
-        String isBeforeEndDate = AppUtils.compareDates(currentdate, items.get(position).getTaskAssignmentEndDate());
-
-        if (isBeforeEndDate.equals("afterdate")) {
-
-            String isBeforeStartDate = AppUtils.compareDates(currentdate, items.get(position).getTaskAssignmentStartDate());
-
-            if (!isBeforeStartDate.equals("beforedate")) {
-
-                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.VISIBLE);
-                holder.mTaskListAdapterBinding.txtTimer.setTextColor(Color.parseColor("#2bb77a"));
+            if (isStartDate.equals("afterdate")) {
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
-
-            } else {
-                conferenceTime.set(secondEnd, minuteEnd, hourEnd, monthDayEnd, monthEnd, yearEnd);
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+                notifyDataSetChanged();
             }
-
-
-        } else {
-
-
+//            else if (isStartDate.equals("after15date")) {
+//                conferenceTime.set(second, minute, hour, monthDay, month, year);
+//                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+//            }
+            else {
+                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                conferenceTime.set(second, minute, hour, monthDay, month, year);
+                notifyDataSetChanged();
+            }
         }
+
+
         conferenceTime.normalize(true);
-        long confMillis = conferenceTime.toMillis(true);
+        final long confMillis = conferenceTime.toMillis(true);
         Time nowTime = new Time(Time.getCurrentTimezone());
         nowTime.setToNow();
         nowTime.normalize(true);
         long nowMillis = nowTime.toMillis(true);
-        long milliDiff = confMillis - nowMillis;
+        long milliDiff = nowMillis - confMillis;
+        milli = milliDiff;
+        long millis = 900000 - milliDiff;
+        timeSwapBuff += timeInMilliseconds;
 
-        new CountDownTimer(milliDiff, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                int days = (int) ((millisUntilFinished / 1000) / 86400);
-                int hours = (int) (((millisUntilFinished / 1000) - (days * 86400)) / 3600);
-                int minutes = (int) (((millisUntilFinished / 1000) - ((days * 86400) + (hours * 3600))) / 60);
-                int seconds = (int) ((millisUntilFinished / 1000) % 60);
-                Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
-                an.setFillAfter(true);
+//        CustomTimerTask myTask = new CustomTimerTask(holder);
+//        Timer myTimer = new Timer();
+//        myTimer.schedule(myTask, millis, 1000);
 
-                String Days = String.format("%02d", days);
-                String Hours = String.format("%02d", hours);
-                String Minutes = String.format("%02d", minutes);
-                String Seconds = String.format("%02d", seconds);
+//        customHandler.removeCallbacks(updateTimerThread);
 
-                holder.mTaskListAdapterBinding.txtTime.setText(Days + ":" + Hours + ":" + Minutes + ":" + Seconds);
-            }
+//        MyCountDownTimer timer = new MyCountDownTimer(millis) {
+//            public void onTick(String Hours, String Minutes, String Seconds) {
+//                holder.mTaskListAdapterBinding.txtTimer.setText(Hours + ":" + Minutes + ":" + Seconds);
+//                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
+//                if (isStartDate.equals("after15date")) {
+//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                } else if (isStartDate.equals("afterdate")) {
+//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                } else {
+//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+//                }
+//            }
+//        };
+//
+//        timer.start();
 
-            @Override
-            public void onFinish() {
-            }
 
-        }.start();
+//        new CountDownTimer(-milliDiff, 1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//
+//                int days = (int) ((millisUntilFinished / 1000) / 86400);
+//                int hours = (int) (((millisUntilFinished / 1000) - (days * 86400)) / 3600);
+//                int minutes = (int) (((millisUntilFinished / 1000) - ((days * 86400) + (hours * 3600))) / 60);
+//                int seconds = (int) ((millisUntilFinished / 1000) % 60);
+//                Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
+//                an.setInterpolator(new LinearInterpolator());
+//                an.setRepeatCount(Animation.INFINITE); //repeating indefinitely
+//                an.setRepeatMode(Animation.INFINITE); //animation will start from end point once ended.
+//                an.setFillAfter(true);
+//
+//                String Days = String.format("%02d", days);
+//                String Hours = String.format("%02d", hours);
+//                String Minutes = String.format("%02d", minutes);
+//                String Seconds = String.format("%02d", seconds);
+//
+//                holder.mTaskListAdapterBinding.txtTimer.setText(Hours + ":" + Minutes + ":" + Seconds);
+//                conferenceTime.set(second, minute, hour, monthDay, month, year);
+//                String isStartDate = AppUtils.compareDates(currentdate, sDate);
+//
+//                if(isStartDate.equals("after15date")){
+//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//            }
+//
+//        }.start();
 
+    }
+
+
+    public void getErrorDialog(SpannableStringBuilder title, String message) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("error", e.getMessage());
+        }
     }
 
 
@@ -309,7 +476,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             this.mTaskListAdapterBinding = mTaskListAdapterBinding;
 
             // sequence example
-            if(!isShown) {
+            if (!isShown) {
                 ShowcaseConfig config = new ShowcaseConfig();
                 config.setDelay(500); // half second between each showcase view
 
@@ -332,4 +499,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             }
         }
     }
+
+
 }

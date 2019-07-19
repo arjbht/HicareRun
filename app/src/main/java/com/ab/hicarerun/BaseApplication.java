@@ -8,6 +8,7 @@ import com.ab.hicarerun.network.HeaderInterceptor;
 import com.ab.hicarerun.network.IRetrofit;
 import com.ab.hicarerun.network.RequestHeader;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.utils.PicassoImageLoadingService;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -27,6 +28,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ss.com.bannerslider.Slider;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class BaseApplication extends Application {
@@ -134,6 +136,38 @@ public class BaseApplication extends Application {
         return retrofit;
     }
 
+    public static IRetrofit getLoggerApi() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
+            @Override public boolean shouldSkipField(FieldAttributes f) {
+                return f.getDeclaringClass().equals(RealmObject.class);
+            }
+
+            @Override public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        });
+        gsonBuilder.registerTypeAdapter(new TypeToken<RealmList<RealmString>>() {
+        }.getType(), RealmStringListTypeAdapter.INSTANCE);
+
+        Gson gson = gsonBuilder.create();
+
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClientBuilder.addInterceptor(loggingInterceptor);
+        }
+
+        IRetrofit retrofit = new Retrofit.Builder().baseUrl(IRetrofit.ERROR_LOG_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .callFactory(httpClientBuilder.build())
+                .build()
+                .create(IRetrofit.class);
+
+        return retrofit;
+    }
 
     @Override
     public void onCreate() {
@@ -141,7 +175,7 @@ public class BaseApplication extends Application {
 
         mOneSignalHelper = new OneSIgnalHelper(this);
 
-
+        Slider.init(new PicassoImageLoadingService(this));
         // initialise the realm database
         try {
             Realm.init(this);

@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionMenuTextAppearance">@style/menu_textOnlyStyle</item>
+        <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
 
     </style>
 
@@ -25,6 +26,12 @@
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:textColorPrimary">@color/colorPrimary</item>
         <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="FullScreenDialogStyle" parent="android:Theme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
     </style>
 
     <style name="AlertDialogCompat">

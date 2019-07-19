@@ -11,6 +11,39 @@
     <string name="save">Save</string>
     <string name="upload_job_card">Upload Job Card</string>
     <string name="send_feedback_link">Send Feedback Link</string>
+    <string name="contact"><u>8828333888</u></string>
+    <string name="helpmail"><u>itsupport@hicare.in</u></string>
+    <string name="login_sign_up">Login / Sign up</string>
+    <string name="status">Status</string>
+    <string name="finish_time">Finish Time</string>
+    <string name="start_time">Start Time</string>
+    <string name="duration">Duration</string>
+    <string name="deprected">Deprected</string>
+    <string name="type">Type</string>
+    <string name="order_no">Order No.</string>
+    <string name="mobile_no">Mobile No.</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="payment_mode">Payment Mode</string>
+    <string name="amount_to_collect">Amount To Collect</string>
+    <string name="bank_name">Bank Name</string>
+    <string name="cheque_date">Cheque Date</string>
+    <string name="cheque_number">Cheque Number</string>
+    <string name="upload_cheque">Upload Cheque</string>
+    <string name="otp">OTP</string>
+    <string name="signatory">Signatory</string>
+    <string name="signature">Signature</string>
+    <string name="amount_collected">Amount Collected</string>
+    <string name="payment_link">Hicare will send a payment link to your phone number and email-id.</string>
+    <string name="feedback_link">Hicare will send a feedback link to your phone number and email-id.</string>
+
+    <string-array name="randomApplause">
+        <item>Excellent!</item>
+        <item>Awesome!</item>
+        <item>Woohoo!</item>
+        <item>Hooray!</item>
+        <item>Congratulations!</item>
+    </string-array>
+
     <string-array name="payment_mode">
         <item>None</item>
         <item>Cash</item>

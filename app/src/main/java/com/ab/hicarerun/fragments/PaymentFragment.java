@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -38,20 +41,30 @@ import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.databinding.FragmentPaymentBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserPaymentClickHandler;
+import com.ab.hicarerun.network.NetworkCallController;
+import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
+import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
+import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
+import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
+import com.bumptech.glide.Glide;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import io.realm.RealmResults;
+
+import static android.view.View.GONE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +79,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private ArrayList<String> images = new ArrayList<>();
     private int amounttocollect = 0;
     private int mYear, mMonth, mDay;
+    private String AmountCollected = "";
 
     private OnSaveEventHandler mCallback;
 
@@ -78,17 +92,35 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private String finalChequeNo = "";
     private String selectedImagePath = "";
     private Bitmap bitmap;
+    private String chequeImg = "";
+    private String Email = "";
+    private String mask = "";
+    private static final int POST_PAYMENT_LINK = 1000;
+    private static final String ARG_TASK = "ARG_TASK";
+    private String taskId = "";
+    private String mobile = "";
+    private String sta = "";
 
 
     public PaymentFragment() {
         // Required empty public constructor
     }
 
-    public static PaymentFragment newInstance() {
+    public static PaymentFragment newInstance(String taskId) {
         Bundle args = new Bundle();
+        args.putString(ARG_TASK, taskId);
         PaymentFragment fragment = new PaymentFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            taskId = getArguments().getString(ARG_TASK);
+        }
+
     }
 
     @Override
@@ -100,6 +132,12 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             throw new ClassCastException(context.toString()
                     + " must implement FragmentToActivity");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppUtils.statusCheck(getActivity());
     }
 
     @Override
@@ -133,6 +171,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
             @Override
             public void afterTextChanged(Editable s) {
+                mCallback.amountCollected(s.toString());
                 getValidated(amounttocollect);
             }
         });
@@ -151,6 +190,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             @Override
             public void afterTextChanged(Editable s) {
                 getValidated(amounttocollect);
+                mCallback.chequeNumber(s.toString());
             }
         });
     }
@@ -161,10 +201,19 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
 
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+            mobile = mGeneralRealmData.get(0).getMobileNumber();
+            Email = mGeneralRealmData.get(0).getEmail();
+            try {
+                mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            chequeImg = mGeneralRealmData.get(0).getChequeImageUrl();
+            AmountCollected = mGeneralRealmData.get(0).getAmountCollected();
 
             amounttocollect = Integer.parseInt(mGeneralRealmData.get(0).getAmountToCollect());
 
-            mFragmentPaymentBinding.txtCollect.setText(String.valueOf(amounttocollect) + " " + "\u20B9");
+            mFragmentPaymentBinding.txtCollect.setText(amounttocollect + " " + "\u20B9");
 
             generalPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
 
@@ -177,7 +226,20 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             type.add(0, "None");
             arrayMode = new String[type.size()];
             arrayMode = type.toArray(arrayMode);
-            String paymentmode = mGeneralRealmData.get(0).getSchedulingStatus();
+            String status = mGeneralRealmData.get(0).getSchedulingStatus();
+            sta = mGeneralRealmData.get(0).getSchedulingStatus();
+
+            try {
+                if (mGeneralRealmData.get(0).getChequeImageUrl() != null && mGeneralRealmData.get(0).getChequeImageUrl().length() != 0) {
+                    mFragmentPaymentBinding.lnrUpload.setVisibility(View.GONE);
+                    Glide.with(getActivity())
+                            .load(mGeneralRealmData.get(0).getChequeImageUrl())
+                            .error(android.R.drawable.stat_notify_error)
+                            .into(mFragmentPaymentBinding.imgUploadCheque);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if (amounttocollect == 0) {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
@@ -185,8 +247,49 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 type.add(0, "None");
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
-            } else if (paymentmode.equals("Completed") || paymentmode.equals("Incomplete")) {
+            } else if (status.equals("Completed")) {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+                if(mFragmentPaymentBinding.txtDate.getText().length() != 0 && !mFragmentPaymentBinding.txtDate.getText().toString().equals("Select Date")){
+                    try {
+                        mFragmentPaymentBinding.txtDate.setText(AppUtils.reFormatDateTime(mGeneralRealmData.get(0).getChequeDate(), "dd-MMM-yyyy"));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                type.clear();
+                type.add(0, mGeneralRealmData.get(0).getPaymentMode());
+                arrayMode = new String[type.size()];
+                arrayMode = type.toArray(arrayMode);
+            } else if (status.equals("Incomplete")) {
+                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
+                type.clear();
+                type.add(0, "None");
+                arrayMode = new String[type.size()];
+                arrayMode = type.toArray(arrayMode);
+            } else if (status.equals("Dispatched")) {
+                mFragmentPaymentBinding.txtCollected.setBackgroundResource(R.drawable.disable_edit_borders);
+                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
                 type.clear();
                 type.add(0, "None");
                 arrayMode = new String[type.size()];
@@ -202,29 +305,64 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             mFragmentPaymentBinding.spnPtmmode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    mode = mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString();
-                    mCallback.mode(mode);
-                    mCallback.amountCollected(mFragmentPaymentBinding.txtCollected.getText().toString());
-                    mCallback.amountToCollect(String.valueOf(amounttocollect));
+                    try {
+                        mFragmentPaymentBinding.btnSendlink.setVisibility(GONE);
+                        mode = mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString();
+                        if (mode.equals("None")) {
+                            mCallback.mode("");
+                        } else {
+                            mCallback.mode(mode);
+                        }
+                        mCallback.amountToCollect(String.valueOf(amounttocollect));
+
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Cheque")) {
+                            mFragmentPaymentBinding.lnrCheque.setVisibility(View.VISIBLE);
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(mFragmentPaymentBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
+                            mFragmentPaymentBinding.txtCollected.requestFocus();
+                            getValidated(amounttocollect);
+
+                        } else {
+                            mFragmentPaymentBinding.lnrCheque.setVisibility(View.GONE);
+                        }
+
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equalsIgnoreCase("Online Payment Link")) {
+                            sendPaymentLink();
+                        }
+
+                        if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PayTm")){
+                            mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
+                            getValidated(amounttocollect);
+                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentPaymentBinding.imgPayscanner);
+                        }else if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Google Pay")){
+                            mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
+                            getValidated(amounttocollect);
+                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentPaymentBinding.imgPayscanner);
+                        }else if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PhonePe")){
+                            mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
+                            getValidated(amounttocollect);
+                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentPaymentBinding.imgPayscanner);
+                        }else {
+                            mFragmentPaymentBinding.cardScanner.setVisibility(View.GONE);
+                        }
 
 
-                    if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Cheque")) {
-                        mFragmentPaymentBinding.lnrCheque.setVisibility(View.VISIBLE);
-                        getValidated(amounttocollect);
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("None")) {
+                            getValidated(amounttocollect);
+                            mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                        }
 
-                    } else {
-                        mFragmentPaymentBinding.lnrCheque.setVisibility(View.GONE);
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Cash")) {
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(mFragmentPaymentBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
+                            mFragmentPaymentBinding.txtCollected.requestFocus();
+                            getValidated(amounttocollect);
+                        }
+                    } catch (Exception e) {
+                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                        AppUtils.sendErrorLogs(getActivity(), e.getMessage(), getActivity().getClass().getSimpleName(), "spinnerPaymentMode", lineNo);
                     }
 
-
-                    if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("None")) {
-                        getValidated(amounttocollect);
-                        mFragmentPaymentBinding.txtCollected.setEnabled(false);
-                    }
-
-                    if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Cash")) {
-                        getValidated(amounttocollect);
-                    }
 
                 }
 
@@ -237,8 +375,92 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         }
     }
 
+    private void sendPaymentLink() {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+
+        View promptsView = li.inflate(R.layout.payment_link_dialog, null);
+
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+
+        alertDialogBuilder.setView(promptsView);
+
+        alertDialogBuilder.setTitle("Payment Link");
+
+        // create alert dialog
+        final android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+        final AppCompatEditText edtmobile =
+                (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
+        final AppCompatEditText edtemail =
+                (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
+        final AppCompatButton btn_send =
+                (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+        final AppCompatButton btn_cancel =
+                (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+        edtemail.setEnabled(false);
+        edtmobile.setEnabled(false);
+
+
+        edtemail.setText(Email);
+        edtmobile.setText(mask);
+
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final RealmResults<GeneralData> mGeneralRealmData =
+                        getRealm().where(GeneralData.class).findAll();
+
+                if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+
+                    PaymentLinkRequest request = new PaymentLinkRequest();
+                    request.setAmount(mGeneralRealmData.get(0).getAmountToCollect());
+                    request.setCustomerName(mGeneralRealmData.get(0).getCustName());
+                    request.setEmail(mGeneralRealmData.get(0).getEmail());
+                    request.setMobileNo(mGeneralRealmData.get(0).getMobileNumber());
+                    request.setOrderNo(mGeneralRealmData.get(0).getOrderNumber());
+                    request.setTaskId(taskId);
+
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object response) {
+                            FeedbackResponse refResponse = (FeedbackResponse) response;
+                            if (refResponse.getSuccess() == true) {
+                                Toast.makeText(getActivity(), "{Payment link is sent successfully.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.sendPaymentLink(POST_PAYMENT_LINK, request);
+                }
+
+                alertDialog.dismiss();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mode.equalsIgnoreCase("Online Payment Link")){
+                    alertDialog.dismiss();
+                    mFragmentPaymentBinding.btnSendlink.setVisibility(View.VISIBLE);
+                }else {
+                    mFragmentPaymentBinding.btnSendlink.setVisibility(GONE);
+                }
+            }
+        });
+        alertDialog.setCancelable(false);
+        alertDialog.setIcon(R.mipmap.logo);
+        alertDialog.show();
+    }
+
     @Override
     public void onCalendarClicked(View view) {
+
         showDatePicker();
     }
 
@@ -256,14 +478,11 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                     try {
                         if (pickResult.getError() == null) {
                             images.add(pickResult.getPath());
-
                             mFragmentPaymentBinding.lnrUpload.setVisibility(View.VISIBLE);
 
                             Bitmap myBitmap = BitmapFactory.decodeFile(pickResult.getPath());
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //                            mFragmentPaymentBinding.imgUploadCheque.setImageBitmap(myBitmap);
-
-
                             selectedImagePath = pickResult.getPath();
                             if (selectedImagePath != null) {
                                 Bitmap bit = new BitmapDrawable(getActivity().getResources(),
@@ -276,6 +495,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             if (mFragmentPaymentBinding.imgUploadCheque.getDrawable() != null) {
                                 mFragmentPaymentBinding.lnrUpload.setVisibility(View.GONE);
                             }
+
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             byte[] b = baos.toByteArray();
                             String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
@@ -283,6 +503,8 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                                 mCallback.isPaymentChanged(true);
                             } else {
                                 mCallback.isPaymentChanged(false);
+                                mCallback.chequeImage(encodedImage);
+                                getValidated(amounttocollect);
                             }
                         }
                     } catch (Exception e) {
@@ -296,6 +518,11 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         }
     }
 
+    @Override
+    public void onSendPaymentLinkClicked(View view) {
+        sendPaymentLink();
+    }
+
     private void showDatePicker() {
         FragmentDatePicker mFragDatePicker = new FragmentDatePicker();
         mFragDatePicker.setmDatePickerListener(this);
@@ -306,6 +533,23 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     public void onDateSet(DatePicker view, int year, int month, int day) {
         month++;
         mFragmentPaymentBinding.txtDate.setText("" + day + "-" + month + "-" + year);
+        String date = mFragmentPaymentBinding.txtDate.getText().toString();
+        mCallback.chequeDate("" + month + "-" + day + "-" + year);
+        final RealmResults<GeneralData> mGeneralRealmData =
+                getRealm().where(GeneralData.class).findAll();
+
+
+        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+            try {
+                String amountToCollect = mGeneralRealmData.get(0).getAmountToCollect();
+                int amount = Integer.parseInt(amountToCollect);
+                getValidated(amount);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
 
@@ -333,6 +577,20 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             @Override
             public void onSelected(String item, int position) {
                 mFragmentPaymentBinding.txtBankname.setText(item);
+                mCallback.bankName(item);
+                final RealmResults<GeneralData> mGeneralRealmData =
+                        getRealm().where(GeneralData.class).findAll();
+
+
+                if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                    try {
+                        String amountToCollect = mGeneralRealmData.get(0).getAmountToCollect();
+                        int amount = Integer.parseInt(amountToCollect);
+                        getValidated(amount);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 alertDialog.dismiss();
             }
 
@@ -377,6 +635,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 mFragmentPaymentBinding.txtCollected.setEnabled(true);
                 if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() == 0) {
                     mCallback.isPaymentChanged(true);
+                    mCallback.isAmountCollectedRequired(true);
                 } else {
                     if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() != 0) {
                         int amount = 0;
@@ -385,8 +644,10 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             amount = Integer.parseInt(mFragmentPaymentBinding.txtCollected.getText().toString());
                             if (amounttocollect == amount) {
                                 mCallback.isPaymentChanged(false);
+                                mCallback.isACEquals(false);
                             } else {
                                 mCallback.isPaymentChanged(true);
+                                mCallback.isACEquals(true);
                             }
 
                         } catch (Exception e) {
@@ -396,6 +657,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
                     } else {
                         mCallback.isPaymentChanged(true);
+                        mCallback.isAmountCollectedRequired(true);
                     }
 
                 }
@@ -408,20 +670,17 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 mFragmentPaymentBinding.txtCollected.setEnabled(true);
                 if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() == 0) {
                     mCallback.isPaymentChanged(true);
+                    mCallback.isAmountCollectedRequired(true);
                 } else {
                     mCallback.isPaymentChanged(false);
+                    mCallback.isAmountCollectedRequired(false);
 
                 }
             } else {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
                 mCallback.isPaymentChanged(false);
+                mCallback.isAmountCollectedRequired(false);
             }
-//            mFragmentPaymentBinding.txtCollected.setEnabled(true);
-//            if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() == 0) {
-//                mCallback.isPaymentChanged(true);
-//            } else {
-//                mCallback.isPaymentChanged(false);
-//            }
         }
 
 
@@ -430,16 +689,80 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             if (isChequeRequired) {
                 mFragmentPaymentBinding.lnrUploadChq.setVisibility(View.VISIBLE);
                 if (mFragmentPaymentBinding.txtChequeNo.getText().length() == 6) {
+                    mCallback.isInvalidChequeNumber(false);
                     if (images.size() == 0) {
                         mCallback.isPaymentChanged(true);
+                        mCallback.isChequeImageRequired(true);
                     } else {
-                        mCallback.isPaymentChanged(false);
+                        mCallback.isChequeImageRequired(false);
+                        if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() != 0) {
+                            int amount = 0;
+                            Log.i("amount", String.valueOf(amount));
+                            try {
+                                amount = Integer.parseInt(mFragmentPaymentBinding.txtCollected.getText().toString());
+                                if (amounttocollect == amount) {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.isAmountCollectedRequired(false);
+                                } else {
+                                    mCallback.isPaymentChanged(true);
+                                    mCallback.isAmountCollectedRequired(true);
+                                }
+
+                            } catch (Exception e) {
+                                e.getMessage();
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            mCallback.isPaymentChanged(true);
+                            mCallback.isAmountCollectedRequired(true);
+                        }
+
                     }
                 } else {
                     mCallback.isPaymentChanged(true);
+                    mCallback.isChequeNumberRequired(true);
                 }
             } else {
                 mFragmentPaymentBinding.lnrUploadChq.setVisibility(View.GONE);
+            }
+            if (mFragmentPaymentBinding.txtChequeNo.getText().toString().length() == 0) {
+                mCallback.isChequeNumberRequired(true);
+            } else {
+                mCallback.isChequeNumberRequired(false);
+            }
+
+            if (mFragmentPaymentBinding.txtChequeNo.getText().toString().length() < 6) {
+                mCallback.isInvalidChequeNumber(true);
+            } else {
+                mCallback.isInvalidChequeNumber(false);
+            }
+
+            if (mFragmentPaymentBinding.txtBankname.getText().equals("Select Bank")) {
+                mCallback.isBankNameRequired(true);
+            } else {
+                mCallback.isBankNameRequired(false);
+            }
+
+            if (mFragmentPaymentBinding.txtDate.getText().equals("Select Date")) {
+                mCallback.isChequeDateRequired(true);
+            } else {
+                mCallback.isChequeDateRequired(false);
+            }
+
+        } else {
+            mCallback.isBankNameRequired(false);
+            mCallback.isChequeDateRequired(false);
+            mCallback.isInvalidChequeNumber(false);
+            mCallback.isChequeNumberRequired(false);
+
+        }
+        if(sta!= null){
+            if(sta.equals("Completed") || sta.equals("Incompleted")){
+                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
             }
         }
     }

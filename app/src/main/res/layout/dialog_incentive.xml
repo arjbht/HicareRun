@@ -6,25 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/transparent">
 
-    <!--<android.support.v7.widget.AppCompatImageView-->
-    <!--android:id="@+id/imgClose"-->
-    <!--android:layout_width="25dp"-->
-    <!--android:layout_height="25dp"-->
-    <!--android:layout_marginLeft="20dp"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:src="@drawable/ic_cancel"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--android:visibility="invisible" />-->
+
     <LinearLayout
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
+        android:layout_marginTop="80dp"
         android:layout_marginRight="50dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Scratch &amp; Earn points!"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/white"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -67,6 +58,77 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="15dp">
+
+
+                <!--<com.goibibo.libs.views.ScratchRelativeLayoutView-->
+                <!--android:id="@+id/lytScratch"-->
+                <!--android:layout_width="200dp"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:background="@drawable/scratch">-->
+
+                <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+                <!--<android.support.v7.widget.AppCompatImageView-->
+                <!--android:id="@+id/imgAward"-->
+                <!--android:layout_width="120dp"-->
+                <!--android:layout_height="120dp"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:foregroundGravity="center"-->
+                <!--android:src="@drawable/ic_trophy" />-->
+
+                <!--<android.support.v7.widget.AppCompatImageView-->
+                <!--android:id="@+id/imgNoAward"-->
+                <!--android:layout_width="90dp"-->
+                <!--android:layout_height="90dp"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:foregroundGravity="center"-->
+                <!--android:src="@drawable/ic_losstrophy"-->
+                <!--android:visibility="invisible" />-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/txtReward"-->
+                <!--android:layout_width="180dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/imgAward"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="7dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="You've won"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="24dp" />-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/txtIncentive"-->
+                <!--android:layout_width="180dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/txtReward"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="0"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="24dp" />-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/txtLose"-->
+                <!--android:layout_width="180dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/imgAward"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Better luck next time!"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="24dp"-->
+                <!--android:visibility="gone" />-->
+
+                <!--</RelativeLayout>-->
+
+                <!--</com.goibibo.libs.views.ScratchRelativeLayoutView>-->
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/imgAward"
@@ -124,11 +186,19 @@
                     android:textSize="24dp"
                     android:visibility="gone" />
 
-                <in.myinnos.androidscratchcard.ScratchCard
-                    android:id="@+id/scratchCard"
+                <com.clock.scratch.ScratchView
+                    android:id="@+id/scratch_view"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:layout_centerInParent="true" />
+                    app:maxPercent="60"
+                    app:watermark="@mipmap/logo" />
+
+                <!--<in.myinnos.androidscratchcard.ScratchCard-->
+                    <!--android:id="@+id/scratchCard"-->
+                    <!--android:layout_width="200dp"-->
+                    <!--android:layout_height="200dp"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:visibility="gone" />-->
             </RelativeLayout>
 
 
@@ -145,8 +215,8 @@
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:text="Ok"
-                android:visibility="gone"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:visibility="gone" />
         </LinearLayout>
 
     </LinearLayout>

@@ -83,6 +83,12 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
         initSmartLocationManager();
     }
 
+    public LocationManager(Activity activity){
+        this.mActivity = activity;
+        initSmartLocationManager();
+    }
+
+
     private void initSmartLocationManager() {
 
         // 1) ask for permission for Android 6 above to avoid crash
@@ -90,7 +96,7 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
         // 3) get location using awesome strategy
 
         askLocationPermission();                            // for android version 6 above
-        checkNetworkProviderEnable(mForceNetworkProviders);                       //
+        checkNetworkProviderEnable();                       //
 
         if (isGooglePlayServicesAvailable())                // if googleplay services available
         {
@@ -341,32 +347,11 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
             if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.INTERNET)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_PHONE_STATE)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
                         Manifest.permission.ACCESS_COARSE_LOCATION)
                         || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.INTERNET)
-                        || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.READ_PHONE_STATE)
-                        || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        || ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                        Manifest.permission.CAMERA)
-                        ) {
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                     final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     builder.setMessage(
@@ -389,16 +374,13 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
                 } else {
                     ActivityCompat.requestPermissions(mActivity, new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
-                            , Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE
-                            , Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            , Manifest.permission.INTERNET
                     }, PERMISSION_REQUEST_CODE);
                 }
             }
         }
     }
 
-    public void checkNetworkProviderEnable(RESTRICTION enforceActive) {
+    public void checkNetworkProviderEnable() {
         locationManager =
                 (android.location.LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
 
@@ -446,6 +428,8 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
+
 
     public Location getLastKnownLocation() {
         locationProvider = android.location.LocationManager.NETWORK_PROVIDER;

@@ -19,6 +19,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_USERNAME = "PREF_USERNAME";
     public static final String PREF_USERID = "PREF_USERID";
     public static final String PREF_ATTACHMENT = "PREF_ATTACHMENT";
+    public static final String PREF_REFRESH = "PREF_REFRESH";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =

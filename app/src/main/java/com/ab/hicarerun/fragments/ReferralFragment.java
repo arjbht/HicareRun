@@ -34,6 +34,7 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.ReferralViewModel;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
@@ -66,6 +67,13 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         ReferralFragment fragment = new ReferralFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppUtils.statusCheck(getActivity());
     }
 
     @Override
@@ -158,11 +166,11 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
                     request.setTaskId(taskId);
                     request.setFirstName(edt_fname.getText().toString());
-                    request.setLastName(edt_lname.getText().toString());
+                    request.setLastName("");
                     request.setMobileNo(edt_contact.getText().toString());
-                    request.setAlternateMobileNo(edt_alt_contact.getText().toString());
-                    request.setEmail(edt_email.getText().toString());
-                    request.setInterestedService(edt_interested.getText().toString());
+                    request.setAlternateMobileNo("");
+                    request.setEmail("");
+                    request.setInterestedService("");
 
                     controller.setListner(new NetworkResponseListner() {
                         @Override
@@ -170,7 +178,6 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                             ReferralResponse refResponse = (ReferralResponse) response;
                             if (refResponse.getSuccess() == true) {
                                 mAdapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), "Referral Saved Successfully.", Toast.LENGTH_LONG).show();
                                 getReferralList();
                             }
                         }
@@ -274,14 +281,14 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
     private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_lname, AppCompatEditText edt_contact, AppCompatEditText edtEmail) {
         if (edt_fname.getText().toString().trim().length() == 0) {
-            edt_fname.setError("First name is required!");
+            edt_fname.setError("Name is required!");
             edt_fname.requestFocus();
             return false;
-        } else if (edt_lname.getText().toString().trim().length() == 0) {
+        } /*else if (edt_lname.getText().toString().trim().length() == 0) {
             edt_lname.setError("Last name is required!");
             edt_lname.requestFocus();
             return false;
-        } else if (edt_contact.getText().toString().trim().length() == 0) {
+        }*/ else if (edt_contact.getText().toString().trim().length() == 0) {
             edt_contact.setError("Mobile number is required!");
             edt_contact.requestFocus();
             return false;
@@ -289,11 +296,15 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             edt_contact.setError("Mobile number is invalid!");
             edt_contact.requestFocus();
             return false;
-        } else if (!edtEmail.getText().toString().trim().matches(emailPattern) && edtEmail.getText().toString().trim().length() == 0) {
-            edtEmail.setError("Email id is invalid!");
-            edtEmail.requestFocus();
-            return false;
-        } else {
+        }/* else if (edtEmail.getText().length() > 0) {
+            if (!edtEmail.getText().toString().trim().matches(emailPattern)) {
+                edtEmail.setError("Email id is invalid!");
+                edtEmail.requestFocus();
+                return false;
+            } else {
+                return true;
+            }
+        }*/ else {
             return true;
         }
     }

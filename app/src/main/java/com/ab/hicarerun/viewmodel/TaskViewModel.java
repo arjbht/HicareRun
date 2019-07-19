@@ -39,6 +39,8 @@ private String CompletedLat;
 private String CompletedLong;
 private String CustomerLat;
 private String CustomerLong;
+private String Tag;
+private int SequenceNumber;
 
     public TaskViewModel() {
         AccountName = "NA";
@@ -73,6 +75,8 @@ private String CustomerLong;
         CompletedLong ="NA";
         CustomerLat ="NA";
         CustomerLong ="NA";
+        Tag = "NA";
+        SequenceNumber = 0;
     }
 
 
@@ -109,6 +113,8 @@ private String CustomerLong;
         CompletedLong = in.readString();
         CustomerLat = in.readString();
         CustomerLong = in.readString();
+        Tag = in.readString();
+        SequenceNumber = in.readInt();
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -379,6 +385,22 @@ private String CustomerLong;
         CustomerLong = customerLong;
     }
 
+    public String getTag() {
+        return Tag;
+    }
+
+    public void setTag(String tag) {
+        Tag = tag;
+    }
+
+    public int getSequenceNumber() {
+        return SequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        SequenceNumber = sequenceNumber;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
@@ -412,6 +434,8 @@ private String CustomerLong;
         this.CompletedLong = tasks.getCompletedLong();
         this.CustomerLat = tasks.getCustomerLatitude();
         this.CustomerLong = tasks.getCustomerLongitude();
+        this.Tag = tasks.getTag();
+        this.SequenceNumber = tasks.getSequenceNumber();
     }
 
 

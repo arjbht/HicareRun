@@ -1,4 +1,4 @@
-package com.ab.hicarerun.network.models ;
+package com.ab.hicarerun.network.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -48,6 +48,10 @@ public class LoginResponse extends RealmObject {
     @SerializedName("userProfilePic")
     @Expose
     private String userProfilePic;
+
+    @SerializedName("isTechnician")
+    @Expose
+    private String isTechnician;
 
     public String getAccessToken() {
         return accessToken;
@@ -135,5 +139,13 @@ public class LoginResponse extends RealmObject {
 
     public void setUserProfilePic(String userProfilePic) {
         this.userProfilePic = userProfilePic;
+    }
+
+    public String getIsTechnician() {
+        return isTechnician;
+    }
+
+    public void setIsTechnician(String isTechnician) {
+        this.isTechnician = isTechnician;
     }
 }

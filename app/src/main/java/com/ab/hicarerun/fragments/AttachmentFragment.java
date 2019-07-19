@@ -34,6 +34,7 @@ import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
@@ -122,66 +123,78 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
 
 
     private void getAttachmentList() {
-        RealmResults<LoginResponse> LoginRealmModels =
-                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-            UserId = LoginRealmModels.get(0).getUserID();
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(this);
-            controller.getAttachments(GET_ATTACHMENT_REQ, taskId, UserId);
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                UserId = LoginRealmModels.get(0).getUserID();
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(this);
+                controller.getAttachments(GET_ATTACHMENT_REQ, taskId, UserId);
+            }
+        } catch (Exception e) {
+            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+            AppUtils.sendErrorLogs(getActivity(), e.toString(), getClass().getSimpleName(), "getAttachmentList", lineNo);
         }
+
     }
 
     @Override
     public void onAddImageClicked(View view) {
-        RealmResults<GeneralData> mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
+        try {
+            RealmResults<GeneralData> mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
 
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-            isCardRequired = mGeneralRealmData.get(0).getJobCardRequired();
-            if (isCardRequired) {
-                PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
-                    @Override
-                    public void onPickResult(PickResult pickResult) {
-                        if (pickResult.getError() == null) {
-                            images.add(pickResult.getPath());
-                            imgFile = new File(pickResult.getPath());
-                            RealmResults<LoginResponse> LoginRealmModels =
-                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                            if (pickResult.getPath() != null) {
-                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                    UserId = LoginRealmModels.get(0).getUserID();
-                                    NetworkCallController controller = new NetworkCallController();
-                                    controller.setListner(new NetworkResponseListner() {
-                                        @Override
-                                        public void onResponse(int requestCode, Object response) {
-                                            PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
-                                            if (postResponse.getSuccess() == true) {
-                                                Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
-                                                getAttachmentList();
-                                            } else {
-                                                Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                isCardRequired = mGeneralRealmData.get(0).getJobCardRequired();
+                if (isCardRequired) {
+                    PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
+                        @Override
+                        public void onPickResult(PickResult pickResult) {
+                            if (pickResult.getError() == null) {
+                                images.add(pickResult.getPath());
+                                imgFile = new File(pickResult.getPath());
+                                RealmResults<LoginResponse> LoginRealmModels =
+                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                if (pickResult.getPath() != null) {
+                                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                        UserId = LoginRealmModels.get(0).getUserID();
+                                        NetworkCallController controller = new NetworkCallController();
+                                        controller.setListner(new NetworkResponseListner() {
+                                            @Override
+                                            public void onResponse(int requestCode, Object response) {
+                                                PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
+                                                if (postResponse.getSuccess() == true) {
+                                                    Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
+                                                    getAttachmentList();
+                                                } else {
+                                                    Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+                                                }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onFailure(int requestCode) {
+                                            @Override
+                                            public void onFailure(int requestCode) {
 
-                                        }
-                                    });
+                                            }
+                                        });
 
-                                    controller.postAttachments(POST_ATTACHMENT_REQ, imgFile, taskId, UserId);
+                                        controller.postAttachments(POST_ATTACHMENT_REQ, imgFile, taskId, UserId);
+                                    }
                                 }
                             }
                         }
-                    }
-                }).show(getActivity());
+                    }).show(getActivity());
 
-            } else {
-                mCallback.isJobCardEnable(false);
-                Toast.makeText(getActivity(), "Disable", Toast.LENGTH_SHORT).show();
+                } else {
+                    mCallback.isJobCardEnable(false);
+                    Toast.makeText(getActivity(), "Disable", Toast.LENGTH_SHORT).show();
+                }
             }
+        } catch (Exception e) {
+            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+            AppUtils.sendErrorLogs(getActivity(), e.toString(), getClass().getSimpleName(), "onAddImageClicked", lineNo);
         }
+
     }
 
     @Override
@@ -192,31 +205,37 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
 
     @Override
     public void onDeleteImageClicked(View view) {
-        AttachmentDeleteRequest request;
-        List<AttachmentDeleteRequest> model = null;
-        model = new ArrayList<>();
-        int count = mAdapter.getItemCount();
-        for (int i = 0; i < count; i++) {
-            if (mAdapter.getItem(i).getChecked()) {
-                request = new AttachmentDeleteRequest();
-                try {
-                    request.setId(mAdapter.getItem(i).getId());
-                    request.setTaskId(mAdapter.getItem(i).getTaskId());
-                    request.setResourceId(mAdapter.getItem(i).getResourceId());
-                    request.setCreated_On(mAdapter.getItem(i).getCreated_On());
-                    request.setFileName(mAdapter.getItem(i).getFileName());
-                    request.setFilePath(mAdapter.getItem(i).getFilePath());
-                    request.setFile(mAdapter.getItem(i).getFile());
-                    model.add(request);
-                } catch (Exception e) {
-                    Log.i("e", e.toString());
-                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT);
+        try {
+            AttachmentDeleteRequest request;
+            List<AttachmentDeleteRequest> model = null;
+            model = new ArrayList<>();
+            int count = mAdapter.getItemCount();
+            for (int i = 0; i < count; i++) {
+                if (mAdapter.getItem(i).getChecked()) {
+                    request = new AttachmentDeleteRequest();
+                    try {
+                        request.setId(mAdapter.getItem(i).getId());
+                        request.setTaskId(mAdapter.getItem(i).getTaskId());
+                        request.setResourceId(mAdapter.getItem(i).getResourceId());
+                        request.setCreated_On(mAdapter.getItem(i).getCreated_On());
+                        request.setFileName(mAdapter.getItem(i).getFileName());
+                        request.setFilePath(mAdapter.getItem(i).getFilePath());
+                        request.setFile(mAdapter.getItem(i).getFile());
+                        model.add(request);
+                    } catch (Exception e) {
+                        Log.i("e", e.toString());
+                        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT);
+                    }
                 }
             }
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(this);
+            controller.getDeleteAttachments(DELETE_ATTACHMENT_REQ, model);
+        }catch (Exception e){
+            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+            AppUtils.sendErrorLogs(getActivity(), e.toString(), getClass().getSimpleName(), "onDeleteImageClicked", lineNo);
         }
-        NetworkCallController controller = new NetworkCallController(this);
-        controller.setListner(this);
-        controller.getDeleteAttachments(DELETE_ATTACHMENT_REQ, model);
+
     }
 
     @Override
@@ -237,6 +256,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                         } else {
                             mCallback.isJobCardEnable(false);
                         }
+                        mCallback.AttachmentList(items);
                     } else if (items.size() > 0) {
                         mFragmentAttachmentBinding.txtData.setVisibility(View.GONE);
                         mAdapter.addData(items);
@@ -248,6 +268,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                         } else {
                             mCallback.isJobCardEnable(false);
                         }
+                        mCallback.AttachmentList(items);
                     } else {
                         pageNumber--;
                     }
@@ -255,6 +276,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                     mFragmentAttachmentBinding.txtData.setVisibility(View.VISIBLE);
                     mFragmentAttachmentBinding.imgSelect.setEnabled(false);
                     mCallback.isJobCardEnable(false);
+                    mCallback.AttachmentList(items);
                 }
 
                 break;
@@ -269,9 +291,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                     } else {
                         mFragmentAttachmentBinding.txtData.setVisibility(GONE);
                     }
-                    getAttachmentList();
-                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
-                    mAdapter.notifyDataSetChanged();
+
 
                     for (int i = 0; i < mAdapter.getItemCount(); i++) {
                         if (mAdapter.getItem(i).getChecked()) {
@@ -279,6 +299,9 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                         }
                     }
 
+                    getAttachmentList();
+                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
+                    mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
 

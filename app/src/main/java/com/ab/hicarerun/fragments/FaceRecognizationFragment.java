@@ -1,23 +1,32 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -33,15 +42,21 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.LoginActivity;
+import com.ab.hicarerun.activities.VerifyOtpActivity;
 import com.ab.hicarerun.databinding.FragmentFaceRecognizationBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
+import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.service.ServiceLocationSend;
+import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.FocusView;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.io.ByteArrayOutputStream;
@@ -50,6 +65,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -103,6 +120,20 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         mFragmentFaceRecognizationBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_face_recognization, container, false);
         surfaceHolder = mFragmentFaceRecognizationBinding.surfaceView.getHolder();
         surfaceHolder.addCallback(this);
+        if (isAttendance) {
+            mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.GONE);
+        }else {
+            if((VerifyOtpActivity) getActivity() != null){
+                mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to complete the registration.");
+                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                toolbar.setVisibility(View.GONE);
+            }
+        }
+
+        FocusView view = new FocusView(getActivity());
+        mFragmentFaceRecognizationBinding.focusView.addView(view);
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return mFragmentFaceRecognizationBinding.getRoot();
     }
@@ -110,8 +141,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setVisibility(View.GONE);
+
 
         cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         mFragmentFaceRecognizationBinding.captureImage.setOnClickListener(new View.OnClickListener() {
@@ -256,155 +286,162 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
 
     private void takeImage() {
-        camera.takePicture(null, null, new Camera.PictureCallback() {
+        try {
+            camera.takePicture(null, null, new Camera.PictureCallback() {
 
-            private File imageFile;
+                private File imageFile;
 
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                try {
-                    // convert byte array into bitmap
-                    Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
-                            data.length);
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    try {
+                        // convert byte array into bitmap
+                        Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
+                                data.length);
 
-                    // rotate Image
-                    Matrix rotateMatrix = new Matrix();
-                    rotateMatrix.postRotate(rotation);
-                    Bitmap rotatedBitmap = Bitmap.createBitmap(loadedImage, 0,
-                            0, loadedImage.getWidth(), loadedImage.getHeight(),
-                            rotateMatrix, false);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    loadedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] b = baos.toByteArray();
-                    encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                    if ((HomeActivity) getActivity() != null) {
-                        RealmResults<LoginResponse> LoginRealmModels =
-                                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                        String resourceId = LoginRealmModels.get(0).getUserID();
-                        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                            if (isAttendance) {
 
-                                AttendanceRequest request = new AttendanceRequest();
-//                request.setBatteryStatistics("");
-//                request.setDeviceIMEINumber("");
-//                request.setDeviceName("");
-//                request.setDeviceTime("");
-//                request.setGPSConnected(true);
-//                request.setInTime("");
-//                request.setInTime_SC_Distance(1.2);
-//                request.setLatitude("");
-//                request.setLongitude("");
-//                request.setUserId("");
-//                request.setPhoneMake("");
-//                request.setResourceImage("");
-//                request.setTechId("");
-                                request.setUserName("");
+                        // rotate Image
+                        Matrix rotateMatrix = new Matrix();
+                        rotateMatrix.postRotate(270);
+                        Bitmap rotatedBitmap = Bitmap.createBitmap(loadedImage, 0,
+                                0, loadedImage.getWidth(), loadedImage.getHeight(),
+                                rotateMatrix, false);
+                      Bitmap convertedImage =   getResizedBitmap(rotatedBitmap, 500);
 
-                                NetworkCallController controller = new NetworkCallController();
-                                controller.setListner(new NetworkResponseListner() {
-                                    @Override
-                                    public void onResponse(int requestCode, Object data) {
-                                        HandShakeResponse response = (HandShakeResponse) data;
-                                        if (response.getSuccess()) {
-                                            Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
-                                            replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        convertedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] b = baos.toByteArray();
+                        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                        if (isAttendance) {
+                            if ((HomeActivity) getActivity() != null) {
+                                RealmResults<LoginResponse> LoginRealmModels =
+                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                    String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
+                                    AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), encodedImage, BatteryStatistics, false);
+                                    NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
+                                    controller.setListner(new NetworkResponseListner() {
+                                        @Override
+                                        public void onResponse(int requestCode, Object data) {
+                                            ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
+                                            if (response.getSuccess()) {
+                                                Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
+                                                replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
+                                            } else {
+                                                getErrorDialog("Attendance Failed", response.getErrorMessage());
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onFailure(int requestCode) {
+                                        @Override
+                                        public void onFailure(int requestCode) {
 
-                                    }
-                                });
-                                controller.getTechAttendance(CAM_REQ, request);
-
-
-                            } else {
-                                NetworkCallController controller = new NetworkCallController();
-                                ProfilePicRequest request = new ProfilePicRequest();
-                                request.setProfilePic(encodedImage);
-                                request.setResourceId(resourceId);
-
-                                controller.setListner(new NetworkResponseListner() {
-                                    @Override
-                                    public void onResponse(int requestCode, Object data) {
-                                        HandShakeResponse response = (HandShakeResponse) data;
-                                        if (response.getSuccess()) {
-                                            AppUtils.getHandShakeCall(username,getActivity());
                                         }
-                                    }
+                                    });
+                                    controller.getTechAttendance(CAM_REQ, request);
 
-                                    @Override
-                                    public void onFailure(int requestCode) {
-
-                                    }
-                                });
-                                controller.postResourceProfilePic(CAM_REQ, request);
+                                }
                             }
 
+                        } else {
+                            if ((VerifyOtpActivity) getActivity() != null) {
+                                RealmResults<LoginResponse> LoginRealmModels =
+                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                String resourceId = LoginRealmModels.get(0).getUserID();
+                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                    NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
+                                    ProfilePicRequest request = new ProfilePicRequest();
+                                    request.setProfilePic(encodedImage);
+                                    request.setResourceId(resourceId);
+
+                                    controller.setListner(new NetworkResponseListner() {
+                                        @Override
+                                        public void onResponse(int requestCode, Object data) {
+                                            HandShakeResponse response = (HandShakeResponse) data;
+                                            if (response.getSuccess()) {
+                                                AppUtils.getHandShakeCall(username, getActivity());
+                                            } else {
+                                                getErrorDialog("Error", "Unable to capture your photo, please try again.");
+                                            }
+                                        }
+
+
+                                        @Override
+                                        public void onFailure(int requestCode) {
+
+                                        }
+                                    });
+                                    controller.postResourceProfilePic(CAM_REQ, request);
+                                }
+                            }
                         }
+
+
+                        String state = Environment.getExternalStorageState();
+                        File folder = null;
+                        if (state.contains(Environment.MEDIA_MOUNTED)) {
+                            folder = new File(Environment
+                                    .getExternalStorageDirectory() + "/hicare");
+                        } else {
+                            folder = new File(Environment
+                                    .getExternalStorageDirectory() + "/hicare");
+                        }
+
+                        boolean success = true;
+                        if (!folder.exists()) {
+                            success = folder.mkdirs();
+                        }
+                        if (success) {
+                            java.util.Date date = new java.util.Date();
+                            imageFile = new File(folder.getAbsolutePath()
+                                    + File.separator
+                                    + new Timestamp(date.getTime()).toString()
+                                    + "Image.jpg");
+
+                            imageFile.createNewFile();
+//                        replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
+
+                        } else {
+                            Toast.makeText(getActivity(), "Image Not saved",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+
+                        // save image into gallery
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+
+                        FileOutputStream fout = new FileOutputStream(imageFile);
+                        fout.write(ostream.toByteArray());
+                        fout.close();
+                        ContentValues values = new ContentValues();
+
+                        values.put(MediaStore.Images.Media.DATE_TAKEN,
+                                System.currentTimeMillis());
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                        values.put(MediaStore.MediaColumns.DATA,
+                                imageFile.getAbsolutePath());
+
+
+                        getActivity().getContentResolver().insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.i("error1", e.getMessage());
                     }
 
-
-                    String state = Environment.getExternalStorageState();
-                    File folder = null;
-                    if (state.contains(Environment.MEDIA_MOUNTED)) {
-                        folder = new File(Environment
-                                .getExternalStorageDirectory() + "/hicare");
-                    } else {
-                        folder = new File(Environment
-                                .getExternalStorageDirectory() + "/hicare");
-                    }
-
-                    boolean success = true;
-                    if (!folder.exists()) {
-                        success = folder.mkdirs();
-                    }
-                    if (success) {
-                        java.util.Date date = new java.util.Date();
-                        imageFile = new File(folder.getAbsolutePath()
-                                + File.separator
-                                + new Timestamp(date.getTime()).toString()
-                                + "Image.jpg");
-
-                        imageFile.createNewFile();
-                        replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
-
-                    } else {
-                        Toast.makeText(getActivity(), "Image Not saved",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-
-                    // save image into gallery
-                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-
-                    FileOutputStream fout = new FileOutputStream(imageFile);
-                    fout.write(ostream.toByteArray());
-                    fout.close();
-                    ContentValues values = new ContentValues();
-
-                    values.put(MediaStore.Images.Media.DATE_TAKEN,
-                            System.currentTimeMillis());
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                    values.put(MediaStore.MediaColumns.DATA,
-                            imageFile.getAbsolutePath());
-
-
-                    getActivity().getContentResolver().insert(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("error2", e.getMessage());
+        }
 
 
     }
+
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -427,34 +464,41 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
     }
 
-    private void getHandShakeCall() {
-        if ((HomeActivity) getActivity() != null) {
-            RealmResults<LoginResponse> LoginRealmModels =
-                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                NetworkCallController controller = new NetworkCallController();
-                controller.setListner(new NetworkResponseListner() {
-                    @Override
-                    public void onResponse(int requestCode, Object data) {
-                        SharedPreferencesUtility.savePrefBoolean(getActivity(),
-                                SharedPreferencesUtility.IS_USER_LOGIN, true);
-                        List<HandShake> items = (List<HandShake>) data;
-                        Intent intent = new Intent(getActivity(), HomeActivity.class);
-                        intent.putExtra(HomeActivity.ARG_HANDSHAKE, (Serializable) items);
-                        intent.putExtra(HomeActivity.ARG_EVENT, true);
-                        intent.putExtra(HomeActivity.ARG_USER, username);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-                    @Override
-                    public void onFailure(int requestCode) {
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
 
-                    }
-                });
-                controller.getHandShake(HANDSHAKE_REQUEST);
-
-            }
+    public void getErrorDialog(String title, String message) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(title);
+            builder.setMessage(
+                    message);
+            builder.setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    openCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("handshake", e.getMessage());
         }
     }
+
+
+
+
 }

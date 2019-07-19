@@ -34,10 +34,6 @@ public class TaskViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmentList.size();
     }
 
-    public void addFragment(Fragment fragment) {
-        mFragmentList.add(fragment);
-    }
-
     @Override
     public CharSequence getPageTitle(int position) {
         return mFragmentTitle.get(position);

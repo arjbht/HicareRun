@@ -1,68 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@android:color/black" />
 
-    <!--<Button-->
-        <!--android:id="@+id/captureImage"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-        <!--android:background="@drawable/button_border"-->
-        <!--android:text="Scan Face"-->
-        <!--android:textColor="@color/white"/>-->
+
+
+            <SurfaceView
+                android:id="@+id/surfaceView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+    <RelativeLayout
+        android:id="@+id/focusView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lnr_guide"
+        android:layout_above="@id/lnr_reason"/>
+
 
         <RelativeLayout
             android:id="@+id/rlCapture"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/cv_capture_bg"
             android:layout_alignParentBottom="true"
-            >
+            android:background="@color/cv_capture_bg">
 
             <Button
                 android:id="@+id/captureImage"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
-                android:enabled="true"
-                android:background="@drawable/button_effect" />
+                android:background="@drawable/button_effect"
+                android:enabled="true" />
 
         </RelativeLayout>
 
-    <!--<Button-->
-        <!--android:id="@+id/flash"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-        <!--android:layout_marginRight="25dp"-->
-        <!--android:layout_toLeftOf="@id/captureImage"-->
-        <!--android:background="@drawable/btn_flash" />-->
 
-    <!--<Button-->
-        <!--android:id="@+id/flipCamera"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-        <!--android:layout_marginLeft="25dp"-->
-        <!--android:layout_toRightOf="@id/captureImage"-->
-        <!--android:background="@drawable/btn_flipcamera" />-->
+        <LinearLayout
+            android:id="@+id/lnr_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rlCapture"
+            android:background="#A6217d55"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="Please Upload your photo to complete the Registration."
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnr_guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="#A6217d55"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="Position your head within the circle to take a photo of yourself when you are ready."/>
+        </LinearLayout>
     </RelativeLayout>
 </layout>

@@ -28,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:maxLength="10"
-                android:hint="First Name"
+                android:hint="Name"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName" />
         </LinearLayout>
@@ -38,6 +37,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="4dp"
+            android:visibility="gone"
             android:paddingBottom="4dp">
 
             <android.support.v7.widget.AppCompatImageView
@@ -90,6 +90,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="4dp"
+            android:visibility="gone"
             android:paddingBottom="4dp">
 
             <android.support.v7.widget.AppCompatImageView
@@ -117,6 +118,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="4dp"
+            android:visibility="gone"
             android:paddingBottom="4dp">
 
             <android.support.v7.widget.AppCompatImageView
@@ -141,6 +143,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
 

@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,7 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
                     for (int i = 0; i < items.size(); i++) {
                         items.get(i).setVisible(false);
                         imgSelect.setImageResource(R.drawable.ic_deselect);
+                        holder.mAttachmentListAdapterBinding.checkAttach.setChecked(false);
                     }
                     notifyDataSetChanged();
 
@@ -105,6 +107,7 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
                 model.setChecked(isChecked);
+
                 int count = 0;
 
                 for (int i = 0; i < items.size(); i++) {
