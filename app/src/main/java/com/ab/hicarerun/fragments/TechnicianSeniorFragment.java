@@ -60,6 +60,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 import static android.app.Activity.RESULT_OK;
@@ -191,7 +192,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     @Override
     public void onCaptureImageItemClick(int position) {
         pos = position;
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         tempImageName = createFileName() + getFileExtension();
         File photo = new File(IMAGE_FILE_PATH, tempImageName);
         Log.i("photo", String.valueOf(photo));
@@ -205,13 +206,8 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             intent.putExtra("output", Uri.fromFile(photo));
         }
 
-
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            TimeStamp = AppUtils.getCurrentTimeStamp();
-            getActivity().startActivityForResult(intent, CAMERA_REQUEST);
-        } else {
-            Toast.makeText(getActivity(), "Unable to open camera", Toast.LENGTH_SHORT).show();
-        }
+        TimeStamp = AppUtils.getCurrentTimeStamp();
+        startActivityForResult(intent, CAMERA_REQUEST);
         Uri.fromFile(photo);
 
     }
@@ -245,6 +241,8 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
                 Log.i("presImage", String.valueOf(prescriptionImage));
                 if (prescriptionImage.getPath().length() > 0) {
                     Uri mImageUri = Uri.fromFile(new File(prescriptionImage.getPath()));
+                    Log.i("imagepath", String.valueOf(mImageUri));
+
 //                    String path = prescriptionImage.getPath();
                     try {
                         selectedImageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
@@ -380,7 +378,8 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             public void onResponse(int requestCode, Object data) {
                 BasicResponse response = (BasicResponse) data;
                 if (response.getSuccess()) {
-                    Toast.makeText(getActivity(), "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
+                    Toasty.success(getActivity(),"Image uploaded successfully.",Toasty.LENGTH_SHORT).show();
                     getGroomingDetails();
                 } else {
                     Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_SHORT).show();

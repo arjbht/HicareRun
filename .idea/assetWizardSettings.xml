@@ -14,8 +14,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_groom" />
-                            <entry key="sourceFile" value="E:\img\groom.svg" />
+                            <entry key="outputName" value="ic_nodata" />
+                            <entry key="sourceFile" value="E:\img\nodata.svg" />
                           </map>
                         </option>
                       </PersistentState>

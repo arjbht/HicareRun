@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.adapter.ReferralListAdapter;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentReferralBinding;
@@ -39,6 +40,8 @@ import com.ab.hicarerun.viewmodel.ReferralViewModel;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -260,7 +263,9 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 if (DeleteResponse.getSuccess()) {
                     mAdapter.removeAll();
                     getReferralList();
-                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
+                    Toasty.success(getActivity(),"Deleted Successfully.",Toast.LENGTH_SHORT).show();
+
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();

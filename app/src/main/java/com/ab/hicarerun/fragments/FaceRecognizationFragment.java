@@ -69,6 +69,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 /**
@@ -325,7 +326,8 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         public void onResponse(int requestCode, Object data) {
                                             ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                             if (response.getSuccess()) {
-                                                Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
+//                                                Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
+                                                Toasty.success(getActivity(),"Attendance marked successfully.",Toast.LENGTH_SHORT).show();
                                                 replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                             } else {
                                                 getErrorDialog("Attendance Failed", response.getErrorMessage());
@@ -376,55 +378,55 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                         }
 
 
-                        String state = Environment.getExternalStorageState();
-                        File folder = null;
-                        if (state.contains(Environment.MEDIA_MOUNTED)) {
-                            folder = new File(Environment
-                                    .getExternalStorageDirectory() + "/hicare");
-                        } else {
-                            folder = new File(Environment
-                                    .getExternalStorageDirectory() + "/hicare");
-                        }
-
-                        boolean success = true;
-                        if (!folder.exists()) {
-                            success = folder.mkdirs();
-                        }
-                        if (success) {
-                            java.util.Date date = new java.util.Date();
-                            imageFile = new File(folder.getAbsolutePath()
-                                    + File.separator
-                                    + new Timestamp(date.getTime()).toString()
-                                    + "Image.jpg");
-
-                            imageFile.createNewFile();
+//                        String state = Environment.getExternalStorageState();
+//                        File folder = null;
+//                        if (state.contains(Environment.MEDIA_MOUNTED)) {
+//                            folder = new File(Environment
+//                                    .getExternalStorageDirectory() + "/hicare");
+//                        } else {
+//                            folder = new File(Environment
+//                                    .getExternalStorageDirectory() + "/hicare");
+//                        }
+//
+//                        boolean success = true;
+//                        if (!folder.exists()) {
+//                            success = folder.mkdirs();
+//                        }
+//                        if (success) {
+//                            java.util.Date date = new java.util.Date();
+//                            imageFile = new File(folder.getAbsolutePath()
+//                                    + File.separator
+//                                    + new Timestamp(date.getTime()).toString()
+//                                    + "Image.jpg");
+//
+//                            imageFile.createNewFile();
 //                        replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
 
-                        } else {
-                            Toast.makeText(getActivity(), "Image Not saved",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+//                        } else {
+//                            Toast.makeText(getActivity(), "Image Not saved",
+//                                    Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
 
-                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-
-                        // save image into gallery
-                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-
-                        FileOutputStream fout = new FileOutputStream(imageFile);
-                        fout.write(ostream.toByteArray());
-                        fout.close();
-                        ContentValues values = new ContentValues();
-
-                        values.put(MediaStore.Images.Media.DATE_TAKEN,
-                                System.currentTimeMillis());
-                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                        values.put(MediaStore.MediaColumns.DATA,
-                                imageFile.getAbsolutePath());
-
-
-                        getActivity().getContentResolver().insert(
-                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+//
+//                        // save image into gallery
+//                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+//
+//                        FileOutputStream fout = new FileOutputStream(imageFile);
+//                        fout.write(ostream.toByteArray());
+//                        fout.close();
+//                        ContentValues values = new ContentValues();
+//
+//                        values.put(MediaStore.Images.Media.DATE_TAKEN,
+//                                System.currentTimeMillis());
+//                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+//                        values.put(MediaStore.MediaColumns.DATA,
+//                                imageFile.getAbsolutePath());
+//
+//
+//                        getActivity().getContentResolver().insert(
+//                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                     } catch (Exception e) {
                         e.printStackTrace();

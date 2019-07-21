@@ -55,6 +55,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 import static android.app.Activity.RESULT_OK;
@@ -215,6 +216,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onResponse(int requestCode, TaskListResponse data) {
+        AppUtils.getDataClean();
         if (data.getErrorMessage().equals("Absent") && !isSkip) {
             mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
             getAttendanceDialog();
@@ -308,7 +310,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 public void onResponse(int requestCode, Object data) {
                                     ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                     if (response.getSuccess()) {
-                                        Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
+                                        Toasty.success(getActivity(),"Attendance marked successfully.",Toast.LENGTH_SHORT).show();
                                         replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                     } else {
                                         Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
@@ -620,5 +622,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         navigationView.getMenu().getItem(1).setChecked(false);
         navigationView.getMenu().getItem(2).setChecked(false);
         navigationView.getMenu().getItem(3).setChecked(false);
+        navigationView.getMenu().getItem(4).setChecked(false);
+
     }
 }

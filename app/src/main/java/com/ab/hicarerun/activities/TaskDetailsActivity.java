@@ -490,7 +490,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                     UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
                                     if (updateResponse.getSuccess() == true) {
                                         progress.dismiss();
-                                        Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
+//                                        Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
+                                        Toasty.success(TaskDetailsActivity.this,"Task changed successfully.",Toast.LENGTH_SHORT).show();
+
                                         if (isIncentiveEnable && Status.equals("Completed")) {
                                             showIncentiveDialog();
                                         } else {

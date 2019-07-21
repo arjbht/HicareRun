@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 import static android.view.View.GONE;
@@ -165,7 +166,8 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                                             public void onResponse(int requestCode, Object response) {
                                                 PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                                 if (postResponse.getSuccess() == true) {
-                                                    Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
+//                                                    Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
+                                                    Toasty.success(getActivity(), "Job card added successfully.", Toast.LENGTH_LONG).show();
                                                     getAttachmentList();
                                                 } else {
                                                     Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();

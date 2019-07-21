@@ -354,21 +354,21 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     view.setDrawingCacheEnabled(true);
                     bmp = Bitmap.createBitmap(view.getDrawingCache());
                     view.setDrawingCacheEnabled(false);
-                    try {
-                        file = new File(Environment.getExternalStorageDirectory().toString(), "SCREEN"
-                                + System.currentTimeMillis() + ".png");
-                        Log.e("here", "------------" + file);
-                        FileOutputStream fos = new FileOutputStream(file);
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-                        mFile = file;
-                        fos.flush();
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        file = new File(Environment.getExternalStorageDirectory().toString(), "SCREEN"
+//                                + System.currentTimeMillis() + ".png");
+//                        Log.e("here", "------------" + file);
+//                        FileOutputStream fos = new FileOutputStream(file);
+//                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//
+//                        mFile = file;
+//                        fos.flush();
+//                        fos.close();
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                     onCallBack();
                     alertDialog.dismiss();
 
