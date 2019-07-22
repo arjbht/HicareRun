@@ -179,8 +179,9 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                         @Override
                         public void onResponse(int requestCode, Object response) {
                             ReferralResponse refResponse = (ReferralResponse) response;
-                            if (refResponse.getSuccess() == true) {
+                            if (refResponse.getSuccess()) {
                                 mAdapter.notifyDataSetChanged();
+                                Toasty.success(getActivity(),"Referral added successfully.",Toast.LENGTH_SHORT).show();
                                 getReferralList();
                             }
                         }
@@ -264,7 +265,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                     mAdapter.removeAll();
                     getReferralList();
 //                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
-                    Toasty.success(getActivity(),"Deleted Successfully.",Toast.LENGTH_SHORT).show();
+                    Toasty.success(getActivity(),"Deleted successfully.",Toast.LENGTH_SHORT).show();
 
                     mAdapter.notifyDataSetChanged();
                 } else {

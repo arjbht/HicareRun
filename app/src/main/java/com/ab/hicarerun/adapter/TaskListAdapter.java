@@ -99,22 +99,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
         holder.mTaskListAdapterBinding.txtStatus.setPrimaryText(items.get(position).getStatus());
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
         if (items.get(position).getStatus().equals("Completed")) {
+            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
 //            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
         } else if (items.get(position).getStatus().equals("Dispatched")) {
 //            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF8C00"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FFA500"));
         } else if (items.get(position).getStatus().equals("On-Site")) {
+            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
 //            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#ffc40d"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#e5e112"));
         } else if (items.get(position).getStatus().equals("Incomplete")) {
+            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
         }
 
@@ -204,9 +206,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 }else {
                     holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 }
-                ha.postDelayed(this, 100000);
+                ha.postDelayed(this, 2000);
             }
-        }, 10000);
+        }, 1000);
 
 
         holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(new View.OnClickListener() {
@@ -317,11 +319,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         if (items.get(position).getStatus().equals("Dispatched")) {
 
+
             if (isStartDate.equals("afterdate")) {
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
+
             }
 //            else if (isStartDate.equals("after15date")) {
 //                conferenceTime.set(second, minute, hour, monthDay, month, year);
@@ -332,10 +335,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
-                notifyDataSetChanged();
             }
-        }
 
+        }else {
+            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+        }
 
         conferenceTime.normalize(true);
         final long confMillis = conferenceTime.toMillis(true);
@@ -480,16 +484,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 ShowcaseConfig config = new ShowcaseConfig();
                 config.setDelay(500); // half second between each showcase view
 
-                MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "arj");
+                MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "Hicare");
 
                 sequence.setConfig(config);
 
 
                 sequence.addSequenceItem(mTaskListAdapterBinding.imgTracklocation,
-                        "This is to track customer location.", "GOT IT");
+                        "Hi there, using this you can track customer location.", "GOT IT");
 
                 sequence.addSequenceItem(mTaskListAdapterBinding.dispatchTaskMobileNo,
-                        "This is to call customer.", "GOT IT");
+                        "Using this you can call customer.", "GOT IT");
 
                 sequence.addSequenceItem(mTaskListAdapterBinding.txtStatus,
                         "You can check your task status here.", "GOT IT");

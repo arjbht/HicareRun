@@ -167,7 +167,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                                                 PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                                 if (postResponse.getSuccess() == true) {
 //                                                    Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
-                                                    Toasty.success(getActivity(), "Job card added successfully.", Toast.LENGTH_LONG).show();
+                                                    Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
                                                     getAttachmentList();
                                                 } else {
                                                     Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
@@ -302,7 +302,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                     }
 
                     getAttachmentList();
-                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
+                    Toasty.success(getActivity(), "Deleted successfully.", Toasty.LENGTH_SHORT).show();
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();

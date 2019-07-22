@@ -54,7 +54,7 @@ public class TechnicianGroomingAdapter extends RecyclerView.Adapter<TechnicianGr
         holder.mOnJobTechniciansListBinding.txtMobile.setText(items.get(position).getMobileNo());
         holder.mOnJobTechniciansListBinding.txtCode.setText(items.get(position).getEmployeeCode());
         if (items.get(position).getImageUrl() != null) {
-            Glide.with(mContext).load(items.get(position).getImageUrl()).into(holder.mOnJobTechniciansListBinding.imgProfile);
+            Glide.with(mContext).load(items.get(position).getImageUrl()).placeholder(R.drawable.ic_groom).into(holder.mOnJobTechniciansListBinding.imgProfile);
             holder.mOnJobTechniciansListBinding.lnrCapture.setVisibility(View.GONE);
             holder.mOnJobTechniciansListBinding.imgProfile.setVisibility(View.VISIBLE);
 

@@ -128,6 +128,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         } else {
             AppUtils.getDataClean();
         }
+        apply();
     }
 
 
@@ -244,6 +245,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             mAdapter.setOnItemClickHandler(new OnListItemClickHandler() {
                 @Override
                 public void onItemClick(int positon) {
+                    AppUtils.getDataClean();
                     Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
                     intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(positon));
                     startActivity(intent);

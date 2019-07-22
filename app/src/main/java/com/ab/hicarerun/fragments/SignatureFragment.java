@@ -354,6 +354,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     view.setDrawingCacheEnabled(true);
                     bmp = Bitmap.createBitmap(view.getDrawingCache());
                     view.setDrawingCacheEnabled(false);
+
 //                    try {
 //                        file = new File(Environment.getExternalStorageDirectory().toString(), "SCREEN"
 //                                + System.currentTimeMillis() + ".png");
@@ -369,7 +370,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }
-                    onCallBack();
+                    onCallBack(bmp);
                     alertDialog.dismiss();
 
                 }
@@ -497,25 +498,25 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     }
 
 
-    private void onCallBack() {
-        if (mFile != null) {
-            if (mFile.exists()) {
+    private void onCallBack(Bitmap bmp) {
+//        if (mFile != null) {
+//            if (mFile.exists()) {
 
                 mFragmentSignatureBinding.txtHint.setVisibility(GONE);
-                path = mFile.getAbsolutePath();
-                Bitmap myBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
+//                path = mFile.getAbsolutePath();
+//                Bitmap myBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] b = baos.toByteArray();
                 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
                 signature = encodedImage;
                 mCallback.signature(encodedImage);
                 mCallback.signatory(mFragmentSignatureBinding.txtSignatory.getText().toString());
-                mFragmentSignatureBinding.imgSign.setImageBitmap(myBitmap);
+                mFragmentSignatureBinding.imgSign.setImageBitmap(bmp);
                 getValidate();
 
-            }
-        }
+//            }
+//        }
     }
 
 

@@ -159,11 +159,11 @@ public class AppUtils {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date1 = sdf.parse(d1);
             Date date2 = sdf.parse(d2);
-//            Date dateAfter = sdf.parse(d2+5*60*1000);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date2);
-            cal.add(Calendar.MINUTE, 15);
-            Date dateAfter = cal.getTime();
+
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(date2);
+//            cal.add(Calendar.MINUTE, 15);
+//            Date dateAfter = cal.getTime();
 
             System.out.println("Date1" + sdf.format(date1));
             System.out.println("Date2" + sdf.format(date2));
@@ -171,13 +171,10 @@ public class AppUtils {
 
             if (date1.after(date2)) {
 
-                if (date1.after(dateAfter)) {
-                    date_result = "after15date";
-                    System.out.println("Date1 is after 15 Date2");
-                } else {
+
                     date_result = "afterdate";
                     System.out.println("Date1 is after Date2");
-                }
+
 
             }
             if (date1.before(date2)) {

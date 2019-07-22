@@ -35,6 +35,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="7dp"
                         android:textColor="@color/colorPrimary"
+                        android:src="@drawable/ic_groom"
                         android:textSize="14dp" />
 
                     <LinearLayout

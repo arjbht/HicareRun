@@ -49,7 +49,6 @@ import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.GroomingViewModel;
-import com.mindorks.paracamera.Camera;
 import com.vansuita.pickimage.bundle.PickSetup;
 
 import java.io.ByteArrayOutputStream;
@@ -78,7 +77,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     private Integer pageNumber = 1;
     private static final int CAMERA_REQUEST = 100;
     private int pos = 0;
-    private Camera camera;
+
     private static final String IMAGE_DIRECTORY = "/hicare";
     final String FILE_ENTENSION = ".jpg";
     public String IMAGE_FILE_PATH;
@@ -109,6 +108,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         mFragmentTechnicianSeniorBinding.swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -326,44 +326,6 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     }
 
 
-    public Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-
-    /**
-     * returning image / video
-     */
-    private static File getOutputMediaFile(int type) {
-
-        // External sdcard location
-        File mediaStorageDir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                IMAGE_DIRECTORY);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("camera", "Oops! Failed create "
-                        + IMAGE_DIRECTORY + " directory");
-                return null;
-            }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-                Locale.getDefault()).format(new Date());
-        File mediaFile;
-
-        if (type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
 
     private void uploadCapturedImage(String encodedImage) {
         NetworkCallController controller = new NetworkCallController(this);

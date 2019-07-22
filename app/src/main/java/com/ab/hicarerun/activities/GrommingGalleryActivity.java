@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityGrommingGalleryBinding;
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.bumptech.glide.Glide;
 
 public class GrommingGalleryActivity extends BaseActivity {
@@ -28,8 +29,7 @@ public class GrommingGalleryActivity extends BaseActivity {
         String image = getIntent().getStringExtra("Image");
         String title = getIntent().getStringExtra("Title");
 
-
-
+//        mActivityGrommingGalleryBinding.imgTech.setOnTouchListener(new ImageMatrixTouchHandler(view.getContext()));
         Glide.with(this).load(image).into(mActivityGrommingGalleryBinding.imgTech);
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
         setSupportActionBar(mActivityGrommingGalleryBinding.toolbar);

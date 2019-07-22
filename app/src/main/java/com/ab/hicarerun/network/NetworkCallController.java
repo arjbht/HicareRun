@@ -849,11 +849,13 @@ public class NetworkCallController {
     }
 
     public void getTrainingVideos(final int requestCode) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getTrainingVideos()
                 .enqueue(new Callback<TrainingResponse>() {
                     @Override
                     public void onResponse(Call<TrainingResponse> call, Response<TrainingResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body().getData());
@@ -866,14 +868,14 @@ public class NetworkCallController {
                                 }
                             }
                         } else {
-//                            mContext.showServerError();
+                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<TrainingResponse> call, Throwable t) {
-//                        mContext.dismissProgressDialog();
-//                        mContext.showServerError("Please try again !!!");
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Please try again !!!");
                     }
                 });
     }
