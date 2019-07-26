@@ -2,7 +2,6 @@ package com.ab.hicarerun.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,18 +14,12 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
-import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.LoginActivity;
-import com.ab.hicarerun.activities.SplashActiviy;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
@@ -34,8 +27,8 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
-import com.ab.hicarerun.network.models.LoggerModel.ErrorLogRequest;
-import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
+import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
+import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -44,8 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
@@ -377,17 +368,20 @@ public class AppUtils {
         try {
             Date currentTime = Calendar.getInstance().getTime();
             String DT = String.valueOf(currentTime);
-            ErrorLogRequest request = new ErrorLogRequest();
-            request.setLevel("");
-            request.setApplicationName("MobileTechnicianAPP");
-            request.setApplicationType("MobileAPP");
-            request.setError(error);
-            request.setFilePath(activityName);
-            request.setLineNo(lineNo);
-            request.setMethodName(methodName);
-            request.setLogDateTime(DT);
-            request.setLogMessage(error);
+            ErrorLoggerModel request = new ErrorLoggerModel();
+            ErrorLog data = new ErrorLog();
+            data.setApplicationName("HicareRun Mobile");
+            data.setApplicationType("Mobile");
+            data.setLevel("Error");
+            data.setLogMessage(error);
+            data.setSource(lineNo);
+            data.setType("Mobile");
+            data.setUserId(0);
+            data.setMethodName(methodName);
+            request.setApplicationName("HicareRun Mobile");
+            request.setApplicationType("Mobile");
             request.setSource("HiCareRun");
+            request.setData(data.toString());
             NetworkCallController controller = new NetworkCallController();
             controller.setListner(new NetworkResponseListner() {
                 @Override

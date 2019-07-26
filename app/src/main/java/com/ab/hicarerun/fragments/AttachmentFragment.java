@@ -4,12 +4,15 @@ package com.ab.hicarerun.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +34,7 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
+import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -41,6 +45,7 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +73,8 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
     RecyclerView.LayoutManager layoutManager;
     private boolean isCardRequired = false;
     private OnJobCardEventHandler mCallback;
+    private String selectedImagePath = "";
+    private Bitmap bitmap;
 
 
     public AttachmentFragment() {
@@ -155,12 +162,30 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                             if (pickResult.getError() == null) {
                                 images.add(pickResult.getPath());
                                 imgFile = new File(pickResult.getPath());
+
+                                selectedImagePath = pickResult.getPath();
+                                if (selectedImagePath != null) {
+                                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                            selectedImagePath).getBitmap();
+                                    int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
+                                    bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
+                                }
+
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] b = baos.toByteArray();
+                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
                                 RealmResults<LoginResponse> LoginRealmModels =
                                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                 if (pickResult.getPath() != null) {
                                     if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                                         UserId = LoginRealmModels.get(0).getUserID();
                                         NetworkCallController controller = new NetworkCallController();
+                                        PostAttachmentRequest request = new PostAttachmentRequest();
+                                        request.setFile(encodedImage);
+                                        request.setResourceId(UserId);
+                                        request.setTaskId(taskId);
                                         controller.setListner(new NetworkResponseListner() {
                                             @Override
                                             public void onResponse(int requestCode, Object response) {
@@ -180,7 +205,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                                             }
                                         });
 
-                                        controller.postAttachments(POST_ATTACHMENT_REQ, imgFile, taskId, UserId);
+                                        controller.postAttachments(POST_ATTACHMENT_REQ, request);
                                     }
                                 }
                             }

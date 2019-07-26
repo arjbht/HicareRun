@@ -149,14 +149,14 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             }
             if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
                 mCallback.getIncompleteReason("");
+                mCallback.isIncompleteReason(true);
+
             } else {
                 mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
-            }
-            if (mFragmentGeneralBinding.txtReason.getText().equals("Select reason")) {
-                mCallback.isIncompleteReason(true);
-            } else {
                 mCallback.isIncompleteReason(false);
+
             }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -188,10 +188,13 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                     mCallback.status(generalTaskRealmModel.get(position).getStatus());
                     if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
                         mFragmentGeneralBinding.cardReason.setVisibility(View.VISIBLE);
-                        if (mFragmentGeneralBinding.txtReason.getText().equals("Select Reason")) {
+                        if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
                             mCallback.isIncompleteReason(true);
+                            mCallback.getIncompleteReason("");
+
                         } else {
                             mCallback.isIncompleteReason(false);
+                            mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
                         }
                     } else {
                         mFragmentGeneralBinding.cardReason.setVisibility(View.GONE);
@@ -236,7 +239,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 final ArrayList<String> type = new ArrayList<>();
                 type.add("Select Reason");
                 for (IncompleteReason incompleteReason : ReasonRealmModel) {
-
                     type.add(incompleteReason.getReason());
                 }
                 arrayReason = new String[type.size()];
@@ -253,12 +255,9 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                         mFragmentGeneralBinding.txtReason.setText(Selection);
                         if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
                             mCallback.getIncompleteReason("");
-                        } else {
-                            mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
-                        }
-                        if (mFragmentGeneralBinding.txtReason.getText().equals("Select Reason")) {
                             mCallback.isIncompleteReason(true);
                         } else {
+                            mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
                             mCallback.isIncompleteReason(false);
                         }
                         mAlertDialog.dismiss();

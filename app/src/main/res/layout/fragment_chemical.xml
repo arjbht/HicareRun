@@ -33,7 +33,9 @@
                         android:layout_weight="2.5"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:text="Name"
+                        android:text="@string/name"
+                        android:ellipsize = "end"
+                        android:singleLine="true"
                         android:textColor="#ffffff" />
 
                     <TextView
@@ -42,7 +44,9 @@
                         android:layout_weight="1.5"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:text="Consumption"
+                        android:ellipsize = "end"
+                        android:singleLine="true"
+                        android:text="@string/consumption"
                         android:textColor="#ffffff" />
 
                     <TextView
@@ -51,7 +55,9 @@
                         android:layout_weight="1.1"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:text="Standard"
+                        android:ellipsize = "end"
+                        android:singleLine="true"
+                        android:text="@string/standard"
                         android:textColor="#ffffff" />
 
                     <TextView
@@ -60,7 +66,9 @@
                         android:layout_weight="1.1"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:text="Actual"
+                        android:ellipsize = "end"
+                        android:singleLine="true"
+                        android:text="@string/actual"
                         android:textColor="#ffffff" />
                 </LinearLayout>
 
@@ -122,7 +130,7 @@
                         android:layout_centerVertical="true"
                         android:buttonTint="@color/colorPrimary"
                         android:paddingLeft="5dp"
-                        android:text="Chemical Verified"
+                        android:text="@string/chemical_verified"
                         android:textColor="@color/colorPrimary"
                         android:textSize="18dp" />
                 </RelativeLayout>

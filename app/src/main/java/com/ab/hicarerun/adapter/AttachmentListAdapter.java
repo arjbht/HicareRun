@@ -113,7 +113,7 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
                 for (int i = 0; i < items.size(); i++) {
                     if (getItem(i).getChecked()) {
                         count++;
-                        txtDelcount.setVisibility(View.VISIBLE);
+                        txtDelcount.setVisibility(View.GONE);
                         txtDelcount.setText("(" + count + ")");
                     } else if (count == 0) {
                         txtDelcount.setVisibility(View.GONE);

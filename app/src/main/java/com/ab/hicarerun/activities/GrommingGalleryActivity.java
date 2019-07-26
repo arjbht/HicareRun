@@ -29,7 +29,6 @@ public class GrommingGalleryActivity extends BaseActivity {
         String image = getIntent().getStringExtra("Image");
         String title = getIntent().getStringExtra("Title");
 
-//        mActivityGrommingGalleryBinding.imgTech.setOnTouchListener(new ImageMatrixTouchHandler(view.getContext()));
         Glide.with(this).load(image).into(mActivityGrommingGalleryBinding.imgTech);
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
         setSupportActionBar(mActivityGrommingGalleryBinding.toolbar);

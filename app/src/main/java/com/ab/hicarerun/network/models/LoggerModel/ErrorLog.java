@@ -4,39 +4,41 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Arjun Bhatt on 7/4/2019.
+ * Created by Arjun Bhatt on 7/25/2019.
  */
-public class ErrorLogRequest {
+public class ErrorLog {
+    @SerializedName("UserId")
+    @Expose
+    private Integer userId;
     @SerializedName("Level")
     @Expose
     private String level;
-    @SerializedName("Error")
+    @SerializedName("Type")
     @Expose
-    private Object error;
+    private String type;
     @SerializedName("Source")
     @Expose
     private String source;
     @SerializedName("ApplicationType")
     @Expose
     private String applicationType;
+    @SerializedName("ApplicationName")
+    @Expose
+    private String applicationName;
     @SerializedName("LogMessage")
     @Expose
     private String logMessage;
     @SerializedName("MethodName")
     @Expose
     private String methodName;
-    @SerializedName("FilePath")
-    @Expose
-    private String filePath;
-    @SerializedName("LineNo")
-    @Expose
-    private String lineNo;
-    @SerializedName("LogDateTime")
-    @Expose
-    private String logDateTime;
-    @SerializedName("ApplicationName")
-    @Expose
-    private String applicationName;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getLevel() {
         return level;
@@ -46,12 +48,12 @@ public class ErrorLogRequest {
         this.level = level;
     }
 
-    public Object getError() {
-        return error;
+    public String getType() {
+        return type;
     }
 
-    public void setError(Object error) {
-        this.error = error;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getSource() {
@@ -70,6 +72,14 @@ public class ErrorLogRequest {
         this.applicationType = applicationType;
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
     public String getLogMessage() {
         return logMessage;
     }
@@ -86,37 +96,4 @@ public class ErrorLogRequest {
         this.methodName = methodName;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getLineNo() {
-        return lineNo;
-    }
-
-    public void setLineNo(String lineNo) {
-        this.lineNo = lineNo;
-    }
-
-    public String getLogDateTime() {
-        return logDateTime;
-    }
-
-    public void setLogDateTime(String logDateTime) {
-        this.logDateTime = logDateTime;
-    }
-
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
 }
-

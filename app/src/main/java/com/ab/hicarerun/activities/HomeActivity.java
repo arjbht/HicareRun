@@ -153,7 +153,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         if (Float.parseFloat(mobileVersion) < Float.parseFloat(version)) {
             String title = "New update available";
             String messageAlert = "<html><body><p>Please update your app to new version.<br><br>Current app version: " + mobileVersion + "<br><br>New version: " + version + "</p></body></html>";
-            AppUtils.showDownloadActionAlertBox(HomeActivity.this,title,String.valueOf(Html.fromHtml(messageAlert)), new DialogInterface.OnClickListener() {
+            AppUtils.showDownloadActionAlertBox(HomeActivity.this, title, String.valueOf(Html.fromHtml(messageAlert)), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (AppUtils.checkConnection(HomeActivity.this)) {
@@ -289,6 +289,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     case R.id.nav_help:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
+
+                    case R.id.nav_myid:
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 

@@ -241,10 +241,16 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
                 if (!isVerified) {
                     Log.i("count", String.valueOf(mAdapter.getItemCount()));
-                    if (map.size() == mAdapter.getItemCount() && isChemicalChecked) {
+                    if (map.size() == mAdapter.getItemCount()) {
                         mCallback.isChemicalChanged(false);
                     } else {
                         mCallback.isChemicalChanged(true);
+                    }
+
+                    if(isChemicalChecked){
+                        mCallback.isChemicalVerified(false);
+                    }else {
+                        mCallback.isChemicalVerified(true);
                     }
 
                 }
@@ -258,14 +264,12 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     public void callAfterResponse() {
         try {
             if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
+                mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
                 mFragmentChemicalBinding.checkChemVerified.setChecked(true);
-                mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
-            } else if( ActualStatus.equals("Dispatched")){
-                mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
-            } else {
+            }  else {
                 mFragmentChemicalBinding.relChemicals.setVisibility(View.VISIBLE);
-                mFragmentChemicalBinding.checkChemVerified.setChecked(false);
                 mFragmentChemicalBinding.checkChemVerified.setEnabled(true);
+                mFragmentChemicalBinding.checkChemVerified.setChecked(false);
             }
 
             for (int i = 0; i < mAdapter.getItemCount(); i++) {

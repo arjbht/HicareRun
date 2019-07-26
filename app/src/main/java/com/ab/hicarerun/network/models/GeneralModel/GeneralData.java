@@ -162,6 +162,44 @@ public class GeneralData implements RealmModel {
     @Expose
     private RealmList<IncompleteReason> IncompleteReasonList = null;
 
+    public GeneralData() {
+        SchedulingStatus = "NA";
+        PaymentMode = "NA";
+        AmountToCollect = "NA";
+        IncompleteReason = "NA";
+        AmountCollected = "NA";
+        MobileNumber = "NA";
+        CustName = "NA";
+        Email = "NA";
+        Duration = "NA";
+        OrderNumber = "NA";
+        NumberOfBhk = "NA";
+        TechnicianOTP = "NA";
+        Sc_OTP = "NA";
+        Customer_OTP = "NA";
+        Signatory = "NA";
+        SignatureUrl = "NA";
+        ServicePlan = "NA";
+        ServiceType = "NA";
+        TaskAssignmentStartTime = "NA";
+        IsFeedBack = false;
+        IsPaymentValidation = false;
+        IsJobCardRequired = false;
+        IsAutoSubmitChemicals = false;
+        IsChequeRequired = false;
+        TaskAssignmentEndTime = "NA";
+        StandardPropertySize = "NA";
+        ActualPropertySize = "NA";
+        IsTechnicianFeedbackRequired = false;
+        TechnicianRating = "NA";
+        IsIncentiveEnable = false;
+        IncentivePoint = "NA";
+        BankName = "NA";
+        ChequeNo = "NA";
+        ChequeDate = "NA";
+        ChequeImageUrl = "NA";
+    }
+
     public String getOrderNumber() {
         return OrderNumber;
     }

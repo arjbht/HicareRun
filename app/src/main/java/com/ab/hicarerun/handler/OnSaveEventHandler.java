@@ -14,8 +14,6 @@ public interface OnSaveEventHandler {
 
     public void amountToCollect(String s);
 
-    //    public void actualPropertySize(String s);
-//    public void standardPropertySize(String s);
     public void feedbackCode(String s);
 
     public void signatory(String s);
@@ -32,6 +30,8 @@ public interface OnSaveEventHandler {
 
     public void isChemicalChanged(Boolean b);
 
+    public void isChemicalVerified(Boolean b);
+
     public void isPaymentChanged(Boolean b);
 
     public void isSignatureChanged(Boolean b);
@@ -39,6 +39,8 @@ public interface OnSaveEventHandler {
     public void isSignatureValidated(Boolean b);
 
     public void isOTPValidated(Boolean b);
+
+    public void isOTPRequired(Boolean b);
 
     public void isFeedbackRequired(Boolean b);
 

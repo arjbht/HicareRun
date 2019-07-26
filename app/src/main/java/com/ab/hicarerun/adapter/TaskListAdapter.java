@@ -206,7 +206,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 }else {
                     holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 }
-                ha.postDelayed(this, 2000);
+                ha.postDelayed(this, 1000);
             }
         }, 1000);
 

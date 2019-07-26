@@ -80,6 +80,8 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private int amounttocollect = 0;
     private int mYear, mMonth, mDay;
     private String AmountCollected = "";
+    private ArrayList<String> type = null;
+    private RealmResults<GeneralData> mGeneralRealmData = null;
 
     private OnSaveEventHandler mCallback;
 
@@ -196,7 +198,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     }
 
     private void getPaymentData() {
-        final RealmResults<GeneralData> mGeneralRealmData =
+        mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
 
 
@@ -208,6 +210,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             chequeImg = mGeneralRealmData.get(0).getChequeImageUrl();
             AmountCollected = mGeneralRealmData.get(0).getAmountCollected();
 
@@ -217,17 +220,23 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
             generalPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
 
-            final ArrayList<String> type = new ArrayList<>();
+            type = new ArrayList<>();
+            type.clear();
             for (GeneralPaymentMode generalPaymentMode : generalPaymentRealmModel) {
                 type.add(generalPaymentMode.getValue());
             }
+
             isTrue = mGeneralRealmData.get(0).getPaymentValidation();
             isChequeRequired = mGeneralRealmData.get(0).getChequeRequired();
             type.add(0, "None");
+            Log.i("type", String.valueOf(type.size()));
+
             arrayMode = new String[type.size()];
             arrayMode = type.toArray(arrayMode);
-            String status = mGeneralRealmData.get(0).getSchedulingStatus();
+            Log.i("payment", Arrays.toString(arrayMode));
+            final String status = mGeneralRealmData.get(0).getSchedulingStatus();
             sta = mGeneralRealmData.get(0).getSchedulingStatus();
+
 
             try {
                 if (mGeneralRealmData.get(0).getChequeImageUrl() != null && mGeneralRealmData.get(0).getChequeImageUrl().length() != 0) {
@@ -248,55 +257,101 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
             } else if (status.equals("Completed")) {
-                mFragmentPaymentBinding.txtCollected.setEnabled(false);
-                mFragmentPaymentBinding.lnrBank.setEnabled(false);
-                mFragmentPaymentBinding.lnrDate.setEnabled(false);
-                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
-                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
-                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
-                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
-                if(mFragmentPaymentBinding.txtDate.getText().length() != 0 && !mFragmentPaymentBinding.txtDate.getText().toString().equals("Select Date")){
-                    try {
-                        mFragmentPaymentBinding.txtDate.setText(AppUtils.reFormatDateTime(mGeneralRealmData.get(0).getChequeDate(), "dd-MMM-yyyy"));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                try {
+                    mFragmentPaymentBinding.txtCollected.setEnabled(false);
+                    mFragmentPaymentBinding.lnrBank.setEnabled(false);
+                    mFragmentPaymentBinding.lnrDate.setEnabled(false);
+                    mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+                    mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+                    mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+                    mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+                    if (mGeneralRealmData.get(0).getChequeDate() != null) {
+                        try {
+                            mFragmentPaymentBinding.txtDate.setText(AppUtils.reFormatDateTime(mGeneralRealmData.get(0).getChequeDate(), "dd-MMM-yyyy"));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    type.clear();
+                    type.add(0, mGeneralRealmData.get(0).getPaymentMode());
+                    arrayMode = new String[type.size()];
+                    arrayMode = type.toArray(arrayMode);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                type.clear();
-                type.add(0, mGeneralRealmData.get(0).getPaymentMode());
-                arrayMode = new String[type.size()];
-                arrayMode = type.toArray(arrayMode);
             } else if (status.equals("Incomplete")) {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
                 mFragmentPaymentBinding.lnrBank.setEnabled(false);
                 mFragmentPaymentBinding.lnrDate.setEnabled(false);
                 mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
-                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
-                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
-                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
-                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
                 type.clear();
                 type.add(0, "None");
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
-            } else if (status.equals("Dispatched")) {
-                mFragmentPaymentBinding.txtCollected.setBackgroundResource(R.drawable.disable_edit_borders);
-                mFragmentPaymentBinding.txtCollected.setEnabled(false);
-                mFragmentPaymentBinding.lnrBank.setEnabled(false);
-                mFragmentPaymentBinding.lnrDate.setEnabled(false);
-                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
-                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
-                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
-                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
-                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
-                type.clear();
-                type.add(0, "None");
-                arrayMode = new String[type.size()];
-                arrayMode = type.toArray(arrayMode);
-            } else {
-                mFragmentPaymentBinding.txtCollected.setEnabled(true);
             }
+
+//            if (amounttocollect == 0) {
+//                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+//                type.clear();
+//                type.add(0, "None");
+//                arrayMode = new String[type.size()];
+//                arrayMode = type.toArray(arrayMode);
+//            } else if (status.equals("Completed")) {
+//                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+//                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+//                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+//                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+//                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+//                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+//                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+//                if(mFragmentPaymentBinding.txtDate.getText().length() != 0 && !mFragmentPaymentBinding.txtDate.getText().toString().equals("Select Date")){
+//                    try {
+//                        mFragmentPaymentBinding.txtDate.setText(AppUtils.reFormatDateTime(mGeneralRealmData.get(0).getChequeDate(), "dd-MMM-yyyy"));
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                type.clear();
+//                type.add(0, mGeneralRealmData.get(0).getPaymentMode());
+//                arrayMode = new String[type.size()];
+//                arrayMode = type.toArray(arrayMode);
+//            } else if (status.equals("Incomplete")) {
+//                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+//                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+//                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+//                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+//                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+//                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+//                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+//                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
+//                type.clear();
+//                type.add(0, "None");
+//                arrayMode = new String[type.size()];
+//                arrayMode = type.toArray(arrayMode);
+//            } else if (status.equals("Dispatched")) {
+//                mFragmentPaymentBinding.txtCollected.setBackgroundResource(R.drawable.disable_edit_borders);
+//                mFragmentPaymentBinding.txtCollected.setEnabled(false);
+//                mFragmentPaymentBinding.lnrBank.setEnabled(false);
+//                mFragmentPaymentBinding.lnrDate.setEnabled(false);
+//                mFragmentPaymentBinding.txtChequeNo.setEnabled(false);
+//                mFragmentPaymentBinding.txtCollected.setText(AmountCollected);
+//                mFragmentPaymentBinding.txtChequeNo.setText(mGeneralRealmData.get(0).getChequeNo());
+//                mFragmentPaymentBinding.txtBankname.setText(mGeneralRealmData.get(0).getBankName());
+//                mFragmentPaymentBinding.txtDate.setText(mGeneralRealmData.get(0).getChequeDate());
+//                type.clear();
+//                type.add(0, "None");
+//                arrayMode = new String[type.size()];
+//                arrayMode = type.toArray(arrayMode);
+//            }
+//            else {
+//                mFragmentPaymentBinding.txtCollected.setEnabled(true);
+//                type.clear();
+//                type.add(0, "None");
+//                arrayMode = new String[type.size()];
+//                arrayMode = type.toArray(arrayMode);
+//            }
             ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
                     R.layout.spinner_layout, arrayMode);
             statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
@@ -327,22 +382,24 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                         }
 
                         if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equalsIgnoreCase("Online Payment Link")) {
-                            sendPaymentLink();
+                            if (sta.equals("On-Site")) {
+                                sendPaymentLink();
+                            }
                         }
 
-                        if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PayTm")){
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PayTm")) {
                             mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
                             getValidated(amounttocollect);
                             Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentPaymentBinding.imgPayscanner);
-                        }else if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Google Pay")){
+                        } else if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Google Pay")) {
                             mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
                             getValidated(amounttocollect);
                             Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentPaymentBinding.imgPayscanner);
-                        }else if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PhonePe")){
+                        } else if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("PhonePe")) {
                             mFragmentPaymentBinding.cardScanner.setVisibility(View.VISIBLE);
                             getValidated(amounttocollect);
                             Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentPaymentBinding.imgPayscanner);
-                        }else {
+                        } else {
                             mFragmentPaymentBinding.cardScanner.setVisibility(View.GONE);
                         }
 
@@ -400,14 +457,18 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         edtemail.setEnabled(false);
         edtmobile.setEnabled(false);
 
+        try {
+            edtmobile.setText(mask);
+            edtemail.setText(Email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        edtemail.setText(Email);
-        edtmobile.setText(mask);
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final RealmResults<GeneralData> mGeneralRealmData =
+                mGeneralRealmData =
                         getRealm().where(GeneralData.class).findAll();
 
                 if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
@@ -445,10 +506,10 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mode.equalsIgnoreCase("Online Payment Link")){
+                if (mode.equalsIgnoreCase("Online Payment Link")) {
                     alertDialog.dismiss();
                     mFragmentPaymentBinding.btnSendlink.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mFragmentPaymentBinding.btnSendlink.setVisibility(GONE);
                 }
             }
@@ -460,13 +521,16 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
     @Override
     public void onCalendarClicked(View view) {
-
-        showDatePicker();
+        if (sta.equals("On-Site")) {
+            showDatePicker();
+        }
     }
 
     @Override
     public void onBankNameClicked(View view) {
-        showBankDialog();
+        if (sta.equals("On-Site")) {
+            showBankDialog();
+        }
     }
 
     @Override
@@ -535,7 +599,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         mFragmentPaymentBinding.txtDate.setText("" + day + "-" + month + "-" + year);
         String date = mFragmentPaymentBinding.txtDate.getText().toString();
         mCallback.chequeDate("" + month + "-" + day + "-" + year);
-        final RealmResults<GeneralData> mGeneralRealmData =
+        mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
 
 
@@ -578,7 +642,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             public void onSelected(String item, int position) {
                 mFragmentPaymentBinding.txtBankname.setText(item);
                 mCallback.bankName(item);
-                final RealmResults<GeneralData> mGeneralRealmData =
+                mGeneralRealmData =
                         getRealm().where(GeneralData.class).findAll();
 
 
@@ -757,8 +821,8 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
             mCallback.isChequeNumberRequired(false);
 
         }
-        if(sta!= null){
-            if(sta.equals("Completed") || sta.equals("Incompleted")){
+        if (sta != null) {
+            if (sta.equals("Completed") || sta.equals("Incompleted")) {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
                 mFragmentPaymentBinding.lnrBank.setEnabled(false);
                 mFragmentPaymentBinding.lnrDate.setEnabled(false);

@@ -4,6 +4,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
+import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
@@ -16,7 +17,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
-import com.ab.hicarerun.network.models.LoggerModel.ErrorLogRequest;
+import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
@@ -36,13 +37,9 @@ import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
 
 import io.realm.Realm;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -484,45 +481,30 @@ public class NetworkCallController {
                 });
     }
 
-    public void postAttachments(final int requestCode, File imgFile, String taskId, String userId) {
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), imgFile);
+    public void postAttachments(final int requestCode, PostAttachmentRequest request) {
 
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("image", imgFile.getName(), requestFile);
-        RequestBody user =
-                RequestBody.create(MediaType.parse("multipart/form-data"), userId);
-        RequestBody task =
-                RequestBody.create(MediaType.parse("multipart/form-data"), taskId);
-//        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
-
-                .postAttachments(body, user, task)
+                .postAttachments(request)
                 .enqueue(new Callback<PostAttachmentResponse>() {
                     @Override
                     public void onResponse(Call<PostAttachmentResponse> call, Response<PostAttachmentResponse> response) {
-//                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
                             } else if (response.errorBody() != null) {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                         } else {
-//                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
-//                        mContext.dismissProgressDialog();
-//                        mContext.showServerError("Please try again !!!");
+
                     }
                 });
     }
@@ -882,7 +864,7 @@ public class NetworkCallController {
 
     /*[Error Log]*/
 
-    public void sendErrorLog(final int requestCode, final ErrorLogRequest request) {
+    public void sendErrorLog(final int requestCode, final ErrorLoggerModel request) {
         BaseApplication.getLoggerApi()
                 .sendErrorLog(request)
                 .enqueue(new Callback<String>() {

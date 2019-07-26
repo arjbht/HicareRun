@@ -13,7 +13,7 @@
     <item
         android:id="@+id/nav_chemicals"
         android:title="Chemicals"
-        android:icon="@drawable/ic_chemical"
+        android:icon="@drawable/ic_pesticide"
         app:showAsAction="ifRoom"
         android:enabled="true"
 
@@ -38,7 +38,7 @@
     <item
         android:id="@+id/nav_signature"
         android:title="Signature"
-        android:icon="@drawable/ic_user"
+        android:icon="@drawable/ic_signature"
         app:showAsAction="ifRoom"
         android:enabled="true"
 

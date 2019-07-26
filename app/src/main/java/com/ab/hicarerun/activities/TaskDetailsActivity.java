@@ -18,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -79,12 +80,14 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private String Status = "", Payment_Mode = "", Amount_Collected = "", Amount_To_Collected = "", Actual_Size = "", Standard_Size = "", Feedback_Code = "", signatory = "", Signature = "", Duration = "";
     private boolean isGeneralChanged = false;
     private boolean isChemicalChanged = false;
+    private boolean isChemicalVerified = false;
     private boolean isPaymentChanged = false;
     private boolean isSignatureChanged = false;
     private boolean isFeedbackRequired = false;
     private boolean isCardRequired = false;
     private boolean isIncentiveEnable = false;
     private boolean isOTPValidated = false;
+    private boolean isOTPRequired = false;
     private boolean isTechnicianFeedbackEnable = false;
     private int Incentive = 0;
     private int TechnicianRating = 0;
@@ -195,9 +198,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void setViewPagerView() {
 
         mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
-        if(sta.equals("Dispatched")){
+        if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
-        }else {
+        } else {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
             mAdapter.addFragment(ChemicalFragment.newInstance(model.getTaskId()), "Chemical Required");
             mAdapter.addFragment(ReferralFragment.newInstance(model.getTaskId()), "Customer Referrals");
@@ -297,18 +300,17 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
             MenuItem payment = menu.findItem(R.id.nav_payment);
             MenuItem signature = menu.findItem(R.id.nav_signature);
 
-            if(sta.equals("Dispatched")){
+            if (sta.equals("Dispatched")) {
                 chemical.setEnabled(false);
                 referral.setEnabled(false);
                 payment.setEnabled(false);
                 signature.setEnabled(false);
-            }else {
+            } else {
                 chemical.setEnabled(true);
                 referral.setEnabled(true);
                 payment.setEnabled(true);
                 signature.setEnabled(true);
             }
-
 
 
             // Set action to perform when any menu-item is selected.
@@ -403,7 +405,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 progress.dismiss();
             } else if (isChemicalChanged && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(1);
-                Toasty.error(this, "Verify chemicals & check chemicals verified", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, "Enter the correct value of chemicals used", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isChemicalVerified && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(1);
+                Toasty.error(this, "Chemical should be verified", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isAmountCollectedRequired && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
@@ -433,6 +439,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
                 Toasty.error(this, "Please upload cheque image", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
+            } else if (isOTPRequired && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
+                progress.dismiss();
+                Toasty.error(this, "OTP field is required", Toast.LENGTH_SHORT, true).show();
             } else if (isOTPValidated && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
                 progress.dismiss();
@@ -481,6 +491,8 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                             request.setChemicalList(ChemReqList);
                             request.setIncompleteReason(incompleteReason);
                             request.setChequeImage(chequeImage);
+                            Log.i("incompleteReason", incompleteReason);
+                            Log.i("chequeImage", chequeImage);
 
 
                             NetworkCallController controller = new NetworkCallController();
@@ -491,7 +503,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                     if (updateResponse.getSuccess() == true) {
                                         progress.dismiss();
 //                                        Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
-                                        Toasty.success(TaskDetailsActivity.this,"Task changed successfully.",Toast.LENGTH_SHORT).show();
+                                        Toasty.success(TaskDetailsActivity.this, "Task changed successfully.", Toast.LENGTH_SHORT).show();
 
                                         if (isIncentiveEnable && Status.equals("Completed")) {
                                             showIncentiveDialog();
@@ -591,7 +603,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
             }
 
-            int[] images = {R.drawable.gift_three,R.drawable.ift1,R.drawable.ift2};
+            int[] images = {R.drawable.gift_three, R.drawable.ift1, R.drawable.ift2};
             Random rand = new Random();
             scratch.setWatermark(images[rand.nextInt(images.length)]);
 
@@ -634,6 +646,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     public void onBackPressed() {
         try {
+            Log.i("incompleteReason", incompleteReason);
             if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() == 0) {
                 AppUtils.getDataClean();
                 passData();
@@ -749,6 +762,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     @Override
+    public void isChemicalVerified(Boolean b) {
+        isChemicalVerified = b;
+    }
+
+    @Override
     public void isPaymentChanged(Boolean b) {
         isPaymentChanged = b;
     }
@@ -766,6 +784,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     public void isOTPValidated(Boolean b) {
         isOTPValidated = b;
+    }
+
+    @Override
+    public void isOTPRequired(Boolean b) {
+        isOTPRequired = b;
     }
 
     @Override

@@ -2,18 +2,14 @@ package com.ab.hicarerun.fragments;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,12 +18,8 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,52 +29,28 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.AttachmentActivity;
-import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.LoginActivity;
-import com.ab.hicarerun.activities.TaskDetailsActivity;
-import com.ab.hicarerun.adapter.AttachmentListAdapter;
-import com.ab.hicarerun.adapter.ReferralListAdapter;
 import com.ab.hicarerun.databinding.FragmentSignatureBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserSignatureClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
-import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;
-import com.vansuita.pickimage.bean.PickResult;
-import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickResult;
 
 import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.realm.RealmResults;
 
-import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 
 /**
@@ -339,11 +307,13 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     (AppCompatImageView) promptsView.findViewById(R.id.img_right);
             final AppCompatImageView img_wrong =
                     (AppCompatImageView) promptsView.findViewById(R.id.img_wrong);
+
             final AppCompatButton btn_close =
                     (AppCompatButton) promptsView.findViewById(R.id.btn_close);
             final AppCompatTextView txt_hint =
                     (AppCompatTextView) promptsView.findViewById(R.id.txt_hint);
-            dv = new DrawingView(getActivity(), txt_hint);
+            img_right.setEnabled(false);
+            dv = new DrawingView(getActivity(), txt_hint ,img_right);
             lnr_screen.addView(dv);
 
             img_right.setOnClickListener(new View.OnClickListener() {
@@ -381,7 +351,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 @Override
                 public void onClick(View v) {
                     lnr_screen.removeAllViews();
-                    dv = new DrawingView(getActivity(), txt_hint);
+                    dv = new DrawingView(getActivity(), txt_hint, img_right);
                     mPaint = new Paint();
                     mPaint.setAntiAlias(true);
                     mPaint.setDither(true);
@@ -499,8 +469,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
 
     private void onCallBack(Bitmap bmp) {
-//        if (mFile != null) {
-//            if (mFile.exists()) {
+        if (bmp != null) {
 
                 mFragmentSignatureBinding.txtHint.setVisibility(GONE);
 //                path = mFile.getAbsolutePath();
@@ -515,8 +484,8 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 mFragmentSignatureBinding.imgSign.setImageBitmap(bmp);
                 getValidate();
 
-//            }
-//        }
+            }
+
     }
 
 
@@ -532,11 +501,13 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         private Paint circlePaint;
         private Path circlePath;
         AppCompatTextView txt_hint;
+        AppCompatImageView img_right;
 
-        public DrawingView(Context c, AppCompatTextView txt_hint) {
+        public DrawingView(Context c, AppCompatTextView txt_hint, AppCompatImageView img_right) {
             super(c);
             context = c;
             this.txt_hint = txt_hint;
+            this.img_right = img_right;
             mPath = new Path();
             mBitmapPaint = new Paint(Paint.DITHER_FLAG);
             circlePaint = new Paint();
@@ -546,13 +517,13 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             circlePaint.setStyle(Paint.Style.STROKE);
             circlePaint.setStrokeJoin(Paint.Join.MITER);
             circlePaint.setStrokeWidth(2f);
+            img_right.setEnabled(false);
             txt_hint.setVisibility(VISIBLE);
         }
 
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-
             mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
         }
@@ -606,6 +577,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 case MotionEvent.ACTION_DOWN:
                     touch_start(x, y);
                     txt_hint.setVisibility(GONE);
+                    img_right.setEnabled(true);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -639,6 +611,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 mFragmentSignatureBinding.txtFeedback.setEnabled(true);
                 mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
                 if (otp.length() != 0) {
+                    mCallback.isOTPRequired(false);
                     if (otp.equals(sc_otp) || otp.equals(customer_otp)) {
                         mCallback.feedbackCode(otp);
                         mCallback.isOTPValidated(false);
@@ -646,7 +619,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                         mCallback.isOTPValidated(true);
                     }
                 } else {
-                    mCallback.isOTPValidated(true);
+                    mCallback.isOTPRequired(true);
                 }
 
 

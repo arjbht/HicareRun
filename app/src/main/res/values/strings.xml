@@ -35,6 +35,12 @@
     <string name="amount_collected">Amount Collected</string>
     <string name="payment_link">Hicare will send a payment link to your phone number and email-id.</string>
     <string name="feedback_link">Hicare will send a feedback link to your phone number and email-id.</string>
+    <string name="close">close</string>
+    <string name="standard">Standard</string>
+    <string name="actual">Actual</string>
+    <string name="consumption">Consumption</string>
+    <string name="name">Name</string>
+    <string name="chemical_verified">Chemical Verified</string>
 
     <string-array name="randomApplause">
         <item>Excellent!</item>
