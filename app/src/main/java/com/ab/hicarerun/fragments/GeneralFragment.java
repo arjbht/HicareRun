@@ -145,7 +145,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             if (res == null || res.length() == 0) {
                 mFragmentGeneralBinding.txtReason.setText("Select Reason");
             } else {
-                mFragmentGeneralBinding.txtReason.setText(Reason);
+                mFragmentGeneralBinding.txtReason.setText(res);
             }
             if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
                 mCallback.getIncompleteReason("");

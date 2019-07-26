@@ -48,6 +48,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
+import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
 import com.bumptech.glide.Glide;
@@ -62,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 import static android.view.View.GONE;
@@ -485,9 +487,9 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                     controller.setListner(new NetworkResponseListner() {
                         @Override
                         public void onResponse(int requestCode, Object response) {
-                            FeedbackResponse refResponse = (FeedbackResponse) response;
-                            if (refResponse.getSuccess() == true) {
-                                Toast.makeText(getActivity(), "{Payment link is sent successfully.", Toast.LENGTH_LONG).show();
+                            PaymentLinkResponse refResponse = (PaymentLinkResponse) response;
+                            if (refResponse.getIsSuccess()) {
+                                Toasty.success(getActivity(), "Payment link sent successfully", Toasty.LENGTH_LONG).show();
                             }
                         }
 

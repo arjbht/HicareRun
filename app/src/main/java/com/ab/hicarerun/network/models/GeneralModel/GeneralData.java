@@ -35,7 +35,7 @@ public class GeneralData implements RealmModel {
     @Expose
     private String MobileNumber;
 
-    @SerializedName("CustName")
+    @SerializedName("CustomerName")
     @Expose
     private String CustName;
 

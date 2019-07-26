@@ -20,7 +20,6 @@
             android:id="@+id/nav_myid"
             android:title="My ID Card"
             android:icon="@drawable/ic_id_card"
-            android:visible="false"
             />
 
         <item

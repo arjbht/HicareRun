@@ -49,6 +49,7 @@ import net.igenius.customcheckbox.CustomCheckBox;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 import static android.view.View.GONE;
@@ -429,8 +430,8 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                         @Override
                         public void onResponse(int requestCode, Object response) {
                             FeedbackResponse refResponse = (FeedbackResponse) response;
-                            if (refResponse.getSuccess() == true) {
-                                Toast.makeText(getActivity(), "Feedback link is sent successfully.", Toast.LENGTH_LONG).show();
+                            if (refResponse.getSuccess()) {
+                                Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
                             }
                         }
 

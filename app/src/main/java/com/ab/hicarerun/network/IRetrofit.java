@@ -21,6 +21,7 @@ import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
+import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -184,6 +185,11 @@ public interface IRetrofit {
 
     @POST("TechnicianGrooming/UploadImage")
     Call<BasicResponse> postGroomingImage(@Body TechGroomingRequest request);
+
+    /*[Resource Profile]*/
+
+    @GET("ResourceActivity/GetResourceProfileDetails")
+    Call<TechnicianProfileDetails> getTechnicianProfile(@Query("resourceId") String customerNo);
 
 
 }

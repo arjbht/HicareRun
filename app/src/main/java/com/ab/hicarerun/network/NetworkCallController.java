@@ -23,6 +23,7 @@ import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
+import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -928,7 +929,7 @@ public class NetworkCallController {
     /*[Send Payment Link]*/
 
     public void sendPaymentLink(final int requestCode, final PaymentLinkRequest request) {
-        BaseApplication.getLoggerApi()
+        BaseApplication.getRetrofitAPI(true)
                 .sendPaymentLink(request)
                 .enqueue(new Callback<PaymentLinkResponse>() {
                     @Override
@@ -1069,6 +1070,64 @@ mContext.showServerError();
                     }
                 });
     }
+
+
+    /*[Resource Profile]*/
+
+    public void getTechnicianProfile(final int requestCode, final String userId) {
+        BaseApplication.getRetrofitAPI(true)
+                .getTechnicianProfile(userId)
+                .enqueue(new Callback<TechnicianProfileDetails>() {
+                    @Override
+                    public void onResponse(Call<TechnicianProfileDetails> call,
+                                           Response<TechnicianProfileDetails> response) {
+                        if (response != null) {
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getTechnicianProfile(requestCode, userId);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
+                        mContext.showServerError("Please try again !!!");
+                    }
+                });
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;
